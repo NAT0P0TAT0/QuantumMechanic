@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{FC297C23-2362-241A-A1DA-5B98CA00E625}</ProjectGuid>
+    <ProjectGuid>{700B0F41-3C51-DA9D-131D-70BCD0090410}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -60,6 +60,7 @@
      <Compile Include="Assets\Scripts\lever.cs" />
      <Compile Include="Assets\Scripts\LightFormPlayer.cs" />
      <Compile Include="Assets\Scripts\parallax.cs" />
+     <Compile Include="Assets\Scripts\PlayerAnimation.cs" />
      <Compile Include="Assets\Scripts\playercontroller.cs" />
      <Compile Include="Assets\Scripts\QuantumAbilities.cs" />
  <Reference Include="UnityEngine.UI">

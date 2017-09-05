@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class QuantumAbilities : MonoBehaviour {
 
@@ -13,7 +14,8 @@ public class QuantumAbilities : MonoBehaviour {
 	public Transform Clone;
     public Transform EntangledClone;
 	public Transform Lightform;
-	public int maxclones = 3;
+	public int maxClones = 3;
+	private int cloneCount = 0;
 	public bool InLightForm = false;
     private float SuperpositionTimeout = 0;
     private float EntanglementTimeout = 0;
@@ -46,18 +48,20 @@ public class QuantumAbilities : MonoBehaviour {
                     buttonHold += Time.deltaTime;
                 } else if (buttonHold > 0){
                     //Entanglement Ability is usable
-                    if (Entanglement && buttonHold > 1f){
+                    if (Entanglement && buttonHold > 0.6f){
                         //find all superposition clones spawned so far
                         for (int i = 0; i < SuperposClones.Count; i++){
-                            //does it still exist?
+                            //does it still exist? if so entangle it
                             if (SuperposClones[i] != null){
                                 SpawnClone(1, SuperposClones[i].position.x, SuperposClones[i].position.y);
                                 KillClone(i);
                             }
                         }
-                    } else {
+                    } else {//create superposition clone
                         SuperpositionTimeout = Time.timeSinceLevelLoad + 0.5f;
-                        SpawnClone(0, playerpos.x, playerpos.y);
+						if(cloneCount < maxClones){
+							SpawnClone(0, playerpos.x, playerpos.y);
+						}
                     }
                     buttonHold = -0.5f;
                 }
@@ -92,6 +96,19 @@ public class QuantumAbilities : MonoBehaviour {
 					//cancel superpositions and entanglements
                     KillAllClones();
 				}
+			}
+		}
+		
+		//player 'observes' clones to despawn them
+		if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)){
+			KillAllClones();
+		}
+		
+		//check how many clones there are
+		cloneCount = 0;
+		foreach(GameObject fooObj in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()){
+			if (fooObj.name.Contains("Copy")){
+				cloneCount++;
 			}
 		}
 	}
