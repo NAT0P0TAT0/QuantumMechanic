@@ -7,6 +7,7 @@ public class button : MonoBehaviour {
 	private bool activated = false;
 	private bool pressed = false;
 	public bool Toggle = false;
+    private Collider objectTouching;
 
 	// Use this for initialization
 	void Start () {
@@ -38,11 +39,15 @@ public class button : MonoBehaviour {
 			}
 		}
 		activated = pressed;
+        if (!Toggle && pressed && !objectTouching){
+            pressed = false;
+        }
 	}
 	
 	void OnTriggerStay(Collider other) {
 		if(other.gameObject.name == "Player-char" || other.gameObject.name.Contains("Copy")){
 			pressed = true;
+            objectTouching = other;
 		}
 	}
 	void OnTriggerExit(Collider other) {

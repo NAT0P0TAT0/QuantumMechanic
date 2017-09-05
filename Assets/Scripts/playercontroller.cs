@@ -64,11 +64,11 @@ public class playercontroller : MonoBehaviour {
         }
 		//manage movement
 		if(Time.timeScale != 0){
-			if (Input.GetKey(KeyCode.A)){
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)){
 				if (rb.velocity.x > -maxspeed){
 					rb.velocity = new Vector3(rb.velocity.x-acceleration, rb.velocity.y, 0);
 				}
-			} else if (Input.GetKey(KeyCode.D)){
+            } else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)){
 				if (rb.velocity.x < maxspeed){
 					rb.velocity = new Vector3(rb.velocity.x+acceleration, rb.velocity.y, 0);
 				}
@@ -85,7 +85,7 @@ public class playercontroller : MonoBehaviour {
 					}
 				}
 			}
-			if (Input.GetKey(KeyCode.Space)){
+            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)){
 				if(onground){
 					rb.velocity = new Vector3(rb.velocity.x, jumpheight, 0);
 					onground = false;

@@ -11,6 +11,7 @@ public class levelcheck : MonoBehaviour {
 	
 	private string _imagePath = "Levels";
 	public string levelgroup = "";
+    public string nextLevel = "end";
     private Texture2D[] levelcodes;
 	void Start(){
 		//load levels from image files
@@ -53,7 +54,7 @@ public class levelcheck : MonoBehaviour {
 		if(levelnum < lastlevel){
 			loadlevel(levelnum);
 		} else {
-			SceneManager.LoadScene("end");
+            SceneManager.LoadScene(nextLevel);
 		}
     }
 	
@@ -61,7 +62,6 @@ public class levelcheck : MonoBehaviour {
 	public Transform thinblockvprefab;
 	public Transform thinblockhprefab;
 	public Transform glassblockprefab;
-	public Transform spikeprefab;
 	public Transform toggleblockprefab;
 	public Transform leverprefab;
 	public Transform buttonprefab;
@@ -119,7 +119,6 @@ public class levelcheck : MonoBehaviour {
 		if(red == 3 && green == 2 && blue == 2) { //lighter red
 		} else if(red == 3 && green == 1 && blue == 1) { //light red
 		} else if(red == 3 && green == 0 && blue == 0) { //red
-			Instantiate(spikeprefab, new Vector3(x, y, 0), transform.rotation);
 		} else if(red == 2 && green == 1 && blue == 1) { //grey red
 		} else if(red == 2 && green == 0 && blue == 0) { //dark red
 		} else if(red == 1 && green == 0 && blue == 0) { //darker red
