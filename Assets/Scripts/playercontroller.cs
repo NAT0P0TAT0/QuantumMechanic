@@ -11,11 +11,6 @@ public class playercontroller : MonoBehaviour {
 	public float deceleration = 0.25f;
 	public int maxspeed = 4;
 	public float jumpheight = 7.5f;
-	private float invincibleTimeout = 0;
-	private bool invincible = false;
-	public int MaxHealth = 5;
-	private int currHealth;
-	private Renderer bodyrender;
     public bool clone = false;
 	public int CloneID = 0;
     public float despawnTime = 9999999999999999999;
@@ -23,41 +18,14 @@ public class playercontroller : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		rb = this.GetComponent<Rigidbody>();
-		currHealth = MaxHealth;
-		bodyrender = this.transform.GetChild(0).GetComponent<Renderer>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
         if (!clone) {
-            //health and damage frames
-            if (Time.time > invincibleTimeout) {
-                invincible = false;
-            }
+            //restart level if player somehow falls out of level
             if (this.transform.position.y < -2) {
-                currHealth = 0;
-            }
-            if (currHealth > MaxHealth) {
-                currHealth = MaxHealth;
-            }
-            if (beingdamaged) {
-                TakeDamage();
-            }
-            if (currHealth < 1) {
-                //die and restart level
-                //GameObject.Find("Map").GetComponent<levelcheck>().RestartLevel();
-                currHealth = MaxHealth;
-                beingdamaged = false;
-                invincibleTimeout = 0;
-            }
-            if (invincible) {
-                if (Mathf.Floor(Time.time * 10) % 2 == 0) {
-                    bodyrender.enabled = true;
-                } else {
-                    bodyrender.enabled = false;
-                }
-            } else {
-                bodyrender.enabled = true;
+                GameObject.Find("LevelLoader").GetComponent<levelcheck>().RestartLevel();
             }
         } else if(Time.timeSinceLevelLoad > despawnTime) {//despawn clones after timeout
             Destroy(this.gameObject);
@@ -102,30 +70,6 @@ public class playercontroller : MonoBehaviour {
 		}
 	}
 	
-	public void TakeDamage(){
-		if (!invincible){
-			currHealth--;
-			invincible = true;
-			invincibleTimeout = Time.time + 2f;
-		}
-	}
-	
-	private bool beingdamaged = false;
-	void OnCollisionStay(Collision other){
-		//detect if hit damaging surface
-		if (other.transform.tag == "danger") {
-			beingdamaged = true;
-			if(clone){
-				Destroy(this.gameObject);
-			}
-		}
-    }
-	void OnCollisionExit(Collision other){
-		//detect if hit damaging surface
-		if (other.transform.tag == "danger") {
-			beingdamaged = false;
-		}
-    }
 	
 	//detecting if player can jump
 	void OnTriggerEnter(Collider other) {
@@ -143,12 +87,12 @@ public class playercontroller : MonoBehaviour {
 		}
     }
 	void OnTriggerStay(Collider other) {
-        if (other.tag == "ground" || other.tag == "clone" || other.tag == "danger") {
+        if (other.tag == "ground" || other.tag == "clone") {
             onground = true;
 		}
     }
 	void OnTriggerExit(Collider other){
-        if (other.tag == "ground" || other.tag == "clone" || other.tag == "danger") {
+        if (other.tag == "ground" || other.tag == "clone") {
             onground = false;
 		}
     }

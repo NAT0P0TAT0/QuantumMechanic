@@ -5,7 +5,7 @@ public class exit : MonoBehaviour {
 	private GameObject go;
 	
 	void Start(){
-		go = GameObject.Find("Map");
+		go = GameObject.Find("LevelLoader");
 	}
 	
 	void OnTriggerEnter(Collider other) {
