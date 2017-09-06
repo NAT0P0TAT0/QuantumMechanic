@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Cameracontrol : MonoBehaviour {
 
-	public GameObject[] targets;
+	public List<GameObject> targets;
 	public int MinZoom = 10;
 	private float currZoom = 10f;
 	private int minSeparation = 8;
@@ -14,6 +14,9 @@ public class Cameracontrol : MonoBehaviour {
 	private Vector3 OtherPos;
 	public int Xlimit = 9999999;
 	public int levelheight = 20;
+	public float camSpeed = 3.5f;
+	private float targetZoom = 10f;
+	private Vector3 targetPos;
 
 	// Use this for initialization
 	void Start () {
@@ -30,13 +33,13 @@ public class Cameracontrol : MonoBehaviour {
 		}
 		PlayerPos = targets[0].transform.position;
 		OtherPos = targets[0].transform.position;
-		if (targets.Length > 2){
+		if (targets.Count > 2){
 			Vector3 average = Vector3.zero;
-			for (int i = 1; i < targets.Length; i++){
+			for (int i = 1; i < targets.Count; i++){
 				average += targets[i].transform.position;
 			}
-			OtherPos = average/(targets.Length-1);
-		} else if (targets.Length == 2){
+			OtherPos = average/(targets.Count-1);
+		} else if (targets.Count == 2){
 			OtherPos = targets[1].transform.position;
 		}
 		float dist = Vector3.Distance(PlayerPos, OtherPos);
@@ -44,6 +47,8 @@ public class Cameracontrol : MonoBehaviour {
 		//manage min and max
 		if (dist > minSeparation) {
 			currZoom = (dist - minSeparation) + MinZoom;
+		} else {
+			currZoom = MinZoom;
 		}
 		if (currZoom > maxZoom) {
 			float zoomdifference = maxZoom/currZoom;
@@ -53,9 +58,19 @@ public class Cameracontrol : MonoBehaviour {
 		if (currZoom < MinZoom) {
 			currZoom = MinZoom;
 		}
-		Vector3 center = Vector3.Lerp(PlayerPos, OtherPos,playerfocus);
-		this.transform.position = new Vector3(center.x, center.y, -10);
-		Camera.main.orthographicSize = currZoom/2;
+		
+		//move cam position and adjust zoom smoothly
+		if(targetZoom > currZoom){
+			targetZoom -= camSpeed*Time.deltaTime;
+			if(targetZoom < currZoom){targetZoom = currZoom;}
+		} else if(targetZoom < currZoom){
+			targetZoom += camSpeed*Time.deltaTime;
+			if(targetZoom > currZoom){targetZoom = currZoom;}
+		}
+		Vector3 center = Vector3.Lerp(PlayerPos, OtherPos, playerfocus);
+		targetPos = new Vector3(center.x, center.y, -10);
+		this.transform.position = Vector3.Lerp(this.transform.position, targetPos, 0.015f*camSpeed);
+		Camera.main.orthographicSize = targetZoom/2;
 		
 		
 		//make sure camera does not leave level bounds

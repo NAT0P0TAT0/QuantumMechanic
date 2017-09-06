@@ -93,8 +93,7 @@ public class QuantumAbilities : MonoBehaviour {
 					Lightform.position = new Vector3(playerpos.x, playerpos.y, 0);
 					InLightForm = true;
 					this.transform.position = new Vector3(2,999,0);
-					//cancel superpositions and entanglements
-                    KillAllClones();
+                    //KillAllClones();
 				}
 			}
 		}
@@ -106,9 +105,13 @@ public class QuantumAbilities : MonoBehaviour {
 		
 		//check how many clones there are
 		cloneCount = 0;
+		Cameracontrol camera = GameObject.Find("Main Camera").GetComponent<Cameracontrol>();
+		int remove = Mathf.Max(0, camera.targets.Count - 1);
+		camera.targets.RemoveRange(0, remove);
 		foreach(GameObject fooObj in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()){
 			if (fooObj.name.Contains("Copy")){
 				cloneCount++;
+				camera.targets.Add(fooObj);
 			}
 		}
 	}
@@ -142,6 +145,7 @@ public class QuantumAbilities : MonoBehaviour {
 		}
 	}
 
+	//cancel superpositions and entanglements
     public void KillAllClones(){
         for (int i = 0; i < SuperposClones.Count; i++){
             KillClone(i);

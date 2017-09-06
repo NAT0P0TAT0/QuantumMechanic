@@ -18,11 +18,4 @@ public class CloneDespawner : MonoBehaviour {
             Destroy(this.gameObject);
         }
 	}
-	
-	void OnCollisionStay(Collision other){
-		//detect if hit damaging surface
-		if (other.transform.tag == "danger") {
-			Destroy(this.gameObject);
-		}
-    }
 }

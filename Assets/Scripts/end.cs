@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class end : MonoBehaviour {
 	void Update() {
 		if (Input.GetKey(KeyCode.R)){
-			SceneManager.LoadScene("game");
+			SceneManager.LoadScene("Part1");
 		}
 	}
 }
