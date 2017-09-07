@@ -134,6 +134,7 @@ public class levelcheck : MonoBehaviour {
 		} else if(red == 1 && green == 0 && blue == 0) { //darker red
 		}
 		
+		//green for player stuff (spawn, checkpoints, etc)
 		if(red == 2 && green == 3 && blue == 2) { //lighter green
 		} else if(red == 1 && green == 3 && blue == 1) { //light green
 		} else if(red == 0 && green == 3 && blue == 0) { //green - player spawn
@@ -146,6 +147,7 @@ public class levelcheck : MonoBehaviour {
 		} else if(red == 0 && green == 1 && blue == 0) { //darker green
 		}
 		
+		//blue for (non ability specific) interactive elemts
 		if(red == 2 && green == 2 && blue == 3) { //lighter blue
 		} else if(red == 1 && green == 1 && blue == 3) { //light blue
 		} else if(red == 0 && green == 0 && blue == 3) { //blue - toggleable block (will replace with something else)
