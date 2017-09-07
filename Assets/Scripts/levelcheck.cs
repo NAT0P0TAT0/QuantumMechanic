@@ -10,11 +10,12 @@ public class levelcheck : MonoBehaviour {
 	private int lastlevel;
 	
 	private string _imagePath = "Levels";
-	public string levelgroup = "";
+	private string levelgroup = "";
     public string nextLevel = "end";
     private Texture2D[] levelcodes;
 	void Start(){
 		//load levels from image files
+		levelgroup = SceneManager.GetActiveScene().name;
 		Object[] textures = Resources.LoadAll(_imagePath+"/"+levelgroup, typeof(Texture2D));
 		if(textures.Length == 0){
 			Debug.Log("Incorrect levelgroup filepath");
@@ -62,6 +63,7 @@ public class levelcheck : MonoBehaviour {
 	public Transform thinblockvprefab;
 	public Transform thinblockhprefab;
 	public Transform glassblockprefab;
+	public Transform angledtileprefab;
 	public Transform toggleblockprefab;
 	public Transform leverprefab;
 	public Transform buttonprefab;
@@ -76,15 +78,18 @@ public class levelcheck : MonoBehaviour {
 			}
 		}
 		
-		GameObject.Find("Main Camera").GetComponent<Cameracontrol>().levelheight = levelcodes[levelid].height;
-		GameObject.Find("Main Camera").GetComponent<Cameracontrol>().Xlimit = levelcodes[levelid].width;
-		
 		//check every single pixel in the image
 		for(int y = 0; y < levelcodes[levelid].height; y++){
 			for(int x = 0; x < levelcodes[levelid].width; x++){
 				spawntile(x, y, levelid);//spawn tile based on pixel colour
 			}
 		}
+		
+		//move camera to start of level and let it know the level bounds
+		Vector3 playerpos = GameObject.Find("Player-char").transform.position;
+		GameObject.Find("Main Camera").transform.position = new Vector3(playerpos.x, playerpos.y, -10);
+		GameObject.Find("Main Camera").GetComponent<Cameracontrol>().levelheight = levelcodes[levelid].height;
+		GameObject.Find("Main Camera").GetComponent<Cameracontrol>().Xlimit = levelcodes[levelid].width;
 	}
 	private string templatepath = "";
 	public float backgroundscale = 0.25f;
@@ -106,44 +111,49 @@ public class levelcheck : MonoBehaviour {
 		if(blue > 0.8){blue = 3;} else if(blue > 0.45){blue = 2;} else if(blue > 0.15){blue = 1;} else {blue = 0;}
 		
 		//define which of the 64 different shades the pixel is, shades can be seen in the "Level colour key" image
-		if(red == 3 && green  == 3 && blue  == 3){ //white
+		if(red == 3 && green  == 3 && blue  == 3){ //white - standard tile
 			Instantiate(blockprefab, new Vector3(x, y, 0), transform.rotation);
 		} else if(red == 2 && green  == 2 && blue  == 2){ //light grey
-			Instantiate(glassblockprefab, new Vector3(x, y, 0), transform.rotation);
-		} else if(red == 1 && green  == 1 && blue  == 1){ //dark grey
+		} else if(red == 1 && green  == 1 && blue  == 1){ //dark grey - back wall tile
 		}
 		//no black condition needed, black means nothing
 		
 		
 		//primary colours
-		if(red == 3 && green == 2 && blue == 2) { //lighter red
-		} else if(red == 3 && green == 1 && blue == 1) { //light red
-		} else if(red == 3 && green == 0 && blue == 0) { //red
-		} else if(red == 2 && green == 1 && blue == 1) { //grey red
-		} else if(red == 2 && green == 0 && blue == 0) { //dark red
+		//reds for wave duality stuff
+		if(red == 3 && green == 2 && blue == 2) { //lighter red - angled surface (bottom left)
+			Instantiate(angledtileprefab, new Vector3(x, y, 0), transform.rotation);
+		} else if(red == 3 && green == 1 && blue == 1) { //light red - angled surface (bottom right)
+			Instantiate(angledtileprefab, new Vector3(x, y, 0), Quaternion.Euler(0,180,0));
+		} else if(red == 3 && green == 0 && blue == 0) { //red - transparent tile
+			Instantiate(glassblockprefab, new Vector3(x, y, 0), transform.rotation);
+		} else if(red == 2 && green == 1 && blue == 1) { //grey red - angled surface (top left)
+			Instantiate(angledtileprefab, new Vector3(x, y, 0), Quaternion.Euler(180,0,0));
+		} else if(red == 2 && green == 0 && blue == 0) { //dark red - angled surface (top right)
+			Instantiate(angledtileprefab, new Vector3(x, y, 0), Quaternion.Euler(180,180,0));
 		} else if(red == 1 && green == 0 && blue == 0) { //darker red
 		}
 		
 		if(red == 2 && green == 3 && blue == 2) { //lighter green
 		} else if(red == 1 && green == 3 && blue == 1) { //light green
-		} else if(red == 0 && green == 3 && blue == 0) { //green
+		} else if(red == 0 && green == 3 && blue == 0) { //green - player spawn
 			GameObject.Find("Player-char").transform.position = new Vector3(x,y,0);
 			GameObject.Find("Player-char").GetComponent<Rigidbody>().velocity = Vector3.zero;
 			GameObject.Find("Player-char").GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
 		} else if(red == 1 && green == 2 && blue == 1) { //grey green
-		} else if(red == 0 && green == 2 && blue == 0) { //dark green
+		} else if(red == 0 && green == 2 && blue == 0) { //dark green - level end (will replace with repair spots)
 			GameObject.Find("Exit").transform.position = new Vector3(x,y,0.5f);
 		} else if(red == 0 && green == 1 && blue == 0) { //darker green
 		}
 		
 		if(red == 2 && green == 2 && blue == 3) { //lighter blue
 		} else if(red == 1 && green == 1 && blue == 3) { //light blue
-		} else if(red == 0 && green == 0 && blue == 3) { //blue
+		} else if(red == 0 && green == 0 && blue == 3) { //blue - toggleable block (will replace with something else)
 			Transform fooObj = Instantiate(toggleblockprefab, new Vector3(x, y, 0), transform.rotation);
 			GameObject fooChild = fooObj.Find("Block-Model").gameObject;
 			fooChild.GetComponent<Renderer>().enabled = true;
 		} else if(red == 1 && green == 1 && blue == 2) { //grey blue
-		} else if(red == 0 && green == 0 && blue == 2) { //dark blue
+		} else if(red == 0 && green == 0 && blue == 2) { //dark blue - toggleable block "off" (will replace with something else)
 			Transform fooObj = Instantiate(toggleblockprefab, new Vector3(x, y, 1), transform.rotation);
 			GameObject fooChild = fooObj.Find("Block-Model").gameObject;
 			fooChild.GetComponent<Renderer>().enabled = false;
@@ -153,9 +163,9 @@ public class levelcheck : MonoBehaviour {
 		
 		//secondary colours
 		if(red == 3 && green == 3 && blue == 2) { //lighter yellow
-		} else if(red == 3 && green == 3 && blue == 1) { //light yellow
+		} else if(red == 3 && green == 3 && blue == 1) { //light yellow - thin floor/ceiling
 			Instantiate(thinblockhprefab, new Vector3(x, y, 0), transform.rotation);
-		} else if(red == 3 && green == 3 && blue == 0) { //yellow
+		} else if(red == 3 && green == 3 && blue == 0) { //yellow - thin wall
 			Instantiate(thinblockvprefab, new Vector3(x, y, 0), transform.rotation);
 		} else if(red == 2 && green == 2 && blue == 1) { //grey yellow
 		} else if(red == 2 && green == 2 && blue == 0) { //dark yellow
@@ -171,13 +181,13 @@ public class levelcheck : MonoBehaviour {
 		}
 		
 		if(red == 2 && green == 3 && blue == 3) { //lighter cyan
-		} else if(red == 1 && green == 3 && blue == 3) { //light cyan
+		} else if(red == 1 && green == 3 && blue == 3) { //light cyan - lever
 			Instantiate(leverprefab, new Vector3(x, y, 0), Quaternion.Euler(0,-180,0));
-		} else if(red == 0 && green == 3 && blue == 3) { //cyan
+		} else if(red == 0 && green == 3 && blue == 3) { //cyan - lever
 			Instantiate(leverprefab, new Vector3(x, y, 0), transform.rotation);
-		} else if(red == 1 && green == 2 && blue == 2) { //grey cyan
+		} else if(red == 1 && green == 2 && blue == 2) { //grey cyan - button
 			Instantiate(buttonprefab, new Vector3(x, y, 0), transform.rotation);
-		} else if(red == 0 && green == 2 && blue == 2) { //dark cyan
+		} else if(red == 0 && green == 2 && blue == 2) { //dark cyan - toggle button
 			Transform newbutton = Instantiate(buttonprefab, new Vector3(x, y, 0), transform.rotation);
 			newbutton.GetComponent<button>().Toggle = true;
 		} else if(red == 0 && green == 1 && blue == 1) { //darker cyan
