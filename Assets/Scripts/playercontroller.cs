@@ -9,7 +9,7 @@ public class playercontroller : MonoBehaviour {
 	private bool onground = false;
 	public float acceleration = 0.5f;
 	public float deceleration = 0.25f;
-	public int maxspeed = 4;
+	public float maxspeed = 4;
 	public float jumpheight = 7.5f;
     public bool clone = false;
 	public int CloneID = 0;
@@ -64,9 +64,13 @@ public class playercontroller : MonoBehaviour {
 		if (onground){
 			this.transform.GetComponent<Collider>().material.dynamicFriction = 0.75f;
 			this.transform.GetComponent<Collider>().material.staticFriction = 0.75f;
+			this.transform.GetComponent<SphereCollider>().material.dynamicFriction = 0.75f;
+			this.transform.GetComponent<SphereCollider>().material.staticFriction = 0.75f;
 		} else {
 			this.transform.GetComponent<Collider>().material.dynamicFriction = 0;
 			this.transform.GetComponent<Collider>().material.staticFriction = 0;
+			this.transform.GetComponent<SphereCollider>().material.dynamicFriction = 0;
+			this.transform.GetComponent<SphereCollider>().material.staticFriction = 0;
 		}
 	}
 	
