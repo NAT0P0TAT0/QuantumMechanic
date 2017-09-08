@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 fileFormatVersion: 2
 guid: 72b32d1eb63724bdebb2879d0700fcec
 MonoImporter:
@@ -5,3 +6,12 @@ MonoImporter:
   defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
+=======
+fileFormatVersion: 2
+guid: 72b32d1eb63724bdebb2879d0700fcec
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+>>>>>>> origin/master
