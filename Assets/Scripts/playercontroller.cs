@@ -64,13 +64,13 @@ public class playercontroller : MonoBehaviour {
 		if (onground){
 			this.transform.GetComponent<Collider>().material.dynamicFriction = 0.75f;
 			this.transform.GetComponent<Collider>().material.staticFriction = 0.75f;
-			this.transform.GetComponent<SphereCollider>().material.dynamicFriction = 0.75f;
-			this.transform.GetComponent<SphereCollider>().material.staticFriction = 0.75f;
+			this.transform.GetComponent<SphereCollider>().material.dynamicFriction = 0.99f;
+			this.transform.GetComponent<SphereCollider>().material.staticFriction = 0.99f;
 		} else {
 			this.transform.GetComponent<Collider>().material.dynamicFriction = 0;
 			this.transform.GetComponent<Collider>().material.staticFriction = 0;
-			this.transform.GetComponent<SphereCollider>().material.dynamicFriction = 0;
-			this.transform.GetComponent<SphereCollider>().material.staticFriction = 0;
+			this.transform.GetComponent<SphereCollider>().material.dynamicFriction = 0.33f;
+			this.transform.GetComponent<SphereCollider>().material.staticFriction = 0.33f;
 		}
 	}
 	
