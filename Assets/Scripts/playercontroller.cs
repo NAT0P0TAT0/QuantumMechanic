@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class playercontroller : MonoBehaviour {
 
 	private Rigidbody rb;
-	private bool onground = false;
+	public bool onground = false;
 	public float acceleration = 0.5f;
 	public float deceleration = 0.25f;
 	public float maxspeed = 4;

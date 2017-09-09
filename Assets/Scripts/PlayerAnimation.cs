@@ -28,19 +28,21 @@ public class PlayerAnimation : MonoBehaviour {
 			this.gameObject.transform.GetChild(0).transform.localScale = new Vector3(1, 2.2f, 1);
         }
 		//check if player is jumping or falling
-		float vertSpeed = this.GetComponent<Rigidbody>().velocity.y;
-		if (vertSpeed > 0.1f){
-            PlayAnimation(jumpSprites);
-			if(state != 3){
-				currFrame = 0;
-				spriteID = 0;
+		if (!this.GetComponent<playercontroller>().onground){
+			float vertSpeed = this.GetComponent<Rigidbody>().velocity.y;
+			if (vertSpeed > 0.1f){
+				PlayAnimation(jumpSprites);
+				if(state != 3){
+					currFrame = 0;
+					spriteID = 0;
+				}
 				state = 3;
-			}
-        } else if (vertSpeed < -0.1f){
-            PlayAnimation(fallSprites);
-			if(state != 2){
-				currFrame = 0;
-				spriteID = 0;
+			} else if (vertSpeed < -0.1f){
+				PlayAnimation(fallSprites);
+				if(state != 2){
+					currFrame = 0;
+					spriteID = 0;
+				}
 				state = 2;
 			}
 		//check if player is running
@@ -49,16 +51,16 @@ public class PlayerAnimation : MonoBehaviour {
 			if(state != 1){
 				currFrame = 0;
 				spriteID = 0;
-				state = 1;
 			}
+			state = 1;
         } else {
 		//check if player is standing still
             PlayAnimation(idleSprites);
 			if(state != 0){
 				currFrame = 0;
 				spriteID = 0;
-				state = 0;
 			}
+			state = 0;
         }
         currFrame += Time.deltaTime;
 	}
