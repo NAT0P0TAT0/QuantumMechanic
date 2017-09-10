@@ -30,14 +30,14 @@ public class PlayerAnimation : MonoBehaviour {
 		//check if player is jumping or falling
 		if (!this.GetComponent<playercontroller>().onground){
 			float vertSpeed = this.GetComponent<Rigidbody>().velocity.y;
-			if (vertSpeed > 0.1f){
+			if (vertSpeed > 0){
 				PlayAnimation(jumpSprites);
 				if(state != 3){
 					currFrame = 0;
 					spriteID = 0;
 				}
 				state = 3;
-			} else if (vertSpeed < -0.1f){
+			} else if (vertSpeed < -0){
 				PlayAnimation(fallSprites);
 				if(state != 2){
 					currFrame = 0;

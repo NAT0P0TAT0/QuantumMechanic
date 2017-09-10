@@ -75,6 +75,7 @@ public class levelcheck : MonoBehaviour {
 		finished = false;
 		ending = false;
 		
+		//remove existing objects from previous levels
 		foreach(GameObject fooObj in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()){
 			if (fooObj.name.Contains("(Clone)") && !fooObj.name.Contains("Music")){
 				if(fooObj.name.Contains("AngledTile")){
@@ -172,6 +173,7 @@ public class levelcheck : MonoBehaviour {
 			Instantiate(buttonprefab, new Vector3(x, y, 0), transform.rotation);
 		} else if(red == 0 && green == 0 && blue == 1) { //darker blue - button
 			Instantiate(backwallprefab, new Vector3(x, y, 0.5f), transform.rotation);
+			Instantiate(wireprefab, new Vector3(x, y, 0.515f), transform.rotation);
 			Transform newbutton = Instantiate(buttonwallprefab, new Vector3(x, y, 0), transform.rotation);
 		}
 		

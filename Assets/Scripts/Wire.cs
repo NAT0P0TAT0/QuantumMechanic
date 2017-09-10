@@ -36,31 +36,52 @@ public class Wire : MonoBehaviour {
 				if(fooObj.transform.position.x == this.transform.position.x - 1 && fooObj.transform.position.y == this.transform.position.y){left = true;}
 			}
 		}
-		//remember which directions have something linked
-		if(!up){this.gameObject.transform.GetChild(1).GetComponent<Renderer>().enabled = false;
-		} else {upRender = this.gameObject.transform.GetChild(1).GetComponent<Renderer>();}
-		if(!right){this.gameObject.transform.GetChild(2).GetComponent<Renderer>().enabled = false;
-		} else {rightRender = this.gameObject.transform.GetChild(2).GetComponent<Renderer>();}
-		if(!down){this.gameObject.transform.GetChild(3).GetComponent<Renderer>().enabled = false;
-		} else {downRender = this.gameObject.transform.GetChild(3).GetComponent<Renderer>();}
-		if(!left){this.gameObject.transform.GetChild(4).GetComponent<Renderer>().enabled = false;
-		} else {leftRender = this.gameObject.transform.GetChild(4).GetComponent<Renderer>();}
+		//get wire directions
+		upRender = this.gameObject.transform.GetChild(1).GetComponent<Renderer>();
+		rightRender = this.gameObject.transform.GetChild(2).GetComponent<Renderer>();
+		downRender = this.gameObject.transform.GetChild(3).GetComponent<Renderer>();
+		leftRender = this.gameObject.transform.GetChild(4).GetComponent<Renderer>();
+		//hide directions that have nothing linked
+		if(!up){this.gameObject.transform.GetChild(1).GetComponent<Renderer>().enabled = false;}
+		if(!right){this.gameObject.transform.GetChild(2).GetComponent<Renderer>().enabled = false;}
+		if(!down){this.gameObject.transform.GetChild(3).GetComponent<Renderer>().enabled = false;}
+		if(!left){this.gameObject.transform.GetChild(4).GetComponent<Renderer>().enabled = false;}
+		
+		updateRender();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		//update attached objects
 		if (powered != previousState){
-			foreach(GameObject fooObj in GameObject.FindGameObjectsWithTag("object")){
-				if (fooObj.name.Contains("Wire")){
-					if(up && fooObj.transform.position.y == this.transform.position.y + 1 && fooObj.transform.position.x == this.transform.position.x){fooObj.GetComponent<Wire>().powered = powered;}
-					if(right && fooObj.transform.position.x == this.transform.position.x + 1 && fooObj.transform.position.y == this.transform.position.y){fooObj.GetComponent<Wire>().powered = powered;}
-					if(down && fooObj.transform.position.y == this.transform.position.y - 1 && fooObj.transform.position.x == this.transform.position.x){fooObj.GetComponent<Wire>().powered = powered;}
-					if(left && fooObj.transform.position.x == this.transform.position.x - 1 && fooObj.transform.position.y == this.transform.position.y){fooObj.GetComponent<Wire>().powered = powered;}
-				}
+			updateAttached();
+			updateRender();
+		}
+		previousState = powered;
+	}
+	
+	void updateAttached(){
+		//update attached wires
+		foreach(GameObject fooObj in GameObject.FindGameObjectsWithTag("object")){
+			if (fooObj.name.Contains("Wire")){
+				if(up && fooObj.transform.position.y == this.transform.position.y + 1 && fooObj.transform.position.x == this.transform.position.x){fooObj.GetComponent<Wire>().powered = powered;}
+				if(right && fooObj.transform.position.x == this.transform.position.x + 1 && fooObj.transform.position.y == this.transform.position.y){fooObj.GetComponent<Wire>().powered = powered;}
+				if(down && fooObj.transform.position.y == this.transform.position.y - 1 && fooObj.transform.position.x == this.transform.position.x){fooObj.GetComponent<Wire>().powered = powered;}
+				if(left && fooObj.transform.position.x == this.transform.position.x - 1 && fooObj.transform.position.y == this.transform.position.y){fooObj.GetComponent<Wire>().powered = powered;}
 			}
 		}
-		//update render
+		//update attached toggleable blocks
+		foreach(GameObject fooObj in GameObject.FindGameObjectsWithTag("ground")){
+			if (fooObj.name.Contains("Toggle")){
+				if(up && fooObj.transform.position.y == this.transform.position.y + 1 && fooObj.transform.position.x == this.transform.position.x){fooObj.GetComponent<ToggleBlock>().swapState();}
+				if(right && fooObj.transform.position.x == this.transform.position.x + 1 && fooObj.transform.position.y == this.transform.position.y){fooObj.GetComponent<ToggleBlock>().swapState();}
+				if(down && fooObj.transform.position.y == this.transform.position.y - 1 && fooObj.transform.position.x == this.transform.position.x){fooObj.GetComponent<ToggleBlock>().swapState();}
+				if(left && fooObj.transform.position.x == this.transform.position.x - 1 && fooObj.transform.position.y == this.transform.position.y){fooObj.GetComponent<ToggleBlock>().swapState();}
+			}
+		}
+	}
+	
+	void updateRender(){
 		if (powered){
 			this.gameObject.transform.GetChild(0).GetComponent<Renderer>().material = poweredMat;
 			if(up){upRender.material = poweredMat;}
@@ -74,6 +95,5 @@ public class Wire : MonoBehaviour {
 			if(down){downRender.material = unpoweredMat;}
 			if(left){leftRender.material = unpoweredMat;}
 		}
-		previousState = powered;
 	}
 }

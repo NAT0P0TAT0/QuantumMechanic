@@ -35,20 +35,6 @@ public class lever : MonoBehaviour {
 					if(fooObj.transform.position.x == this.transform.position.x - 1 && fooObj.transform.position.y == this.transform.position.y){fooObj.GetComponent<Wire>().powered = !fooObj.GetComponent<Wire>().powered;}
 				}
 			}
-			
-			//switch toggleable blocks
-			foreach(GameObject fooObj in GameObject.FindGameObjectsWithTag("ground")){
-				if (fooObj.name.Contains("Toggle")){
-					fooObj.transform.position = new Vector3(fooObj.transform.position.x,fooObj.transform.position.y,1+fooObj.transform.position.z);
-					GameObject fooChild = fooObj.transform.Find("Block-Model").gameObject;
-					if(fooObj.transform.position.z == 2){
-						fooObj.transform.position = new Vector3(fooObj.transform.position.x,fooObj.transform.position.y,0);
-						fooChild.GetComponent<Renderer>().enabled = true;
-					} else {
-						fooChild.GetComponent<Renderer>().enabled = false;
-					}
-				}
-			}
 		}
 	}
 	

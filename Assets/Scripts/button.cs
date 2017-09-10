@@ -36,20 +36,6 @@ public class button : MonoBehaviour {
 				}
 			}
 			
-			
-			//find and switch the toggleable blocks
-			foreach(GameObject fooObj in GameObject.FindGameObjectsWithTag("ground")){
-				if (fooObj.name.Contains("Toggle")){
-					fooObj.transform.position = new Vector3(fooObj.transform.position.x,fooObj.transform.position.y,1+fooObj.transform.position.z);
-					GameObject fooChild = fooObj.transform.Find("Block-Model").gameObject;
-					if(fooObj.transform.position.z == 2){
-						fooObj.transform.position = new Vector3(fooObj.transform.position.x,fooObj.transform.position.y,0);
-						fooChild.GetComponent<Renderer>().enabled = true;
-					} else {
-						fooChild.GetComponent<Renderer>().enabled = false;
-					}
-				}
-			}
 			if(Toggle){
 				this.gameObject.transform.GetChild(0).GetComponent<Renderer>().material = usedButton;
 			}
