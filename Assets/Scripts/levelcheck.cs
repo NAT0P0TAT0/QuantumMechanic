@@ -39,7 +39,10 @@ public class levelcheck : MonoBehaviour {
 	void Update() {
 		if (Input.GetKeyDown(KeyCode.R)){
 			RestartLevel();
-		}
+        }
+        if (Input.GetKeyDown(KeyCode.Q)){
+            SceneManager.LoadScene("MainMenu");
+        }
 		if((finished && ending == false) || Input.GetKeyDown(KeyCode.P)){
 			levelnum++;
 			ending = true;
@@ -69,15 +72,23 @@ public class levelcheck : MonoBehaviour {
 	public Transform leverprefab;
 	public Transform buttonprefab;
 	public Transform buttonwallprefab;
-	public Transform wireprefab;
+    public Transform wireprefab;
 	private Color pixelcol;
 	void loadlevel(int levelid){
+        //disable light mode
+        GameObject.Find("Player-char").GetComponent<QuantumAbilities>().CancelLightMode();
+
 		finished = false;
 		ending = false;
 		
 		//remove existing objects from previous levels
 		foreach(GameObject fooObj in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()){
-			if (fooObj.name.Contains("(Clone)") && !fooObj.name.Contains("Music")){
+            //move wires to fix bug where they connect to where other wires were in the previous level
+            if (fooObj.name.Contains("Wire")){
+                fooObj.transform.position = new Vector3(-999, -999, -999);
+            }
+            //delete all the cloned prefabs - except for the angled blocks since their render model breaks if any of them is deleted for some stupid reason -_-
+			if (fooObj.name.Contains("(Clone)")){
 				if(fooObj.name.Contains("AngledTile")){
 					fooObj.transform.position = new Vector3(-999,-999,-999);
 				} else {
@@ -102,11 +113,6 @@ public class levelcheck : MonoBehaviour {
 	private string templatepath = "";
 	public float backgroundscale = 0.25f;
 	public float middlegroundscale = 0.5f;
-	void getleveltheme(int levelid){
-		//set up parallax
-		GameObject.Find("Background").transform.localScale = new Vector3(levelcodes[levelid].width,levelcodes[levelid].height,0.1f);
-		GameObject.Find("Background-moving").transform.localScale = new Vector3(levelcodes[levelid].width/backgroundscale,levelcodes[levelid].height/backgroundscale,0.1f);
-	}
 	void spawntile(int x, int y, int levelid){
 		//get the pixels colour values
 		pixelcol = levelcodes[levelid].GetPixel(x, y);
@@ -119,7 +125,9 @@ public class levelcheck : MonoBehaviour {
 		if(blue > 0.8){blue = 3;} else if(blue > 0.45){blue = 2;} else if(blue > 0.15){blue = 1;} else {blue = 0;}
 		
 		//define which of the 64 different shades the pixel is, shades can be seen in the "Level colour key" image
-		if(red == 3 && green  == 3 && blue  == 3){ //white - standard tile
+
+        //Greys - for static blocks
+		if(red == 3 && green  == 3 && blue  == 3){ //white - standard solid tile
 			Instantiate(blockprefab, new Vector3(x, y, 0), transform.rotation);
 		} else if(red == 2 && green  == 2 && blue  == 2){ //light grey
 		} else if(red == 1 && green  == 1 && blue  == 1){ //dark grey - back wall tile
@@ -128,8 +136,8 @@ public class levelcheck : MonoBehaviour {
 		//no black condition needed, black means nothing
 		
 		
-		//primary colours
-		//reds for wave duality stuff
+		//Primary colours
+		//Reds - for wave duality stuff
 		if(red == 3 && green == 2 && blue == 2) { //lighter red - angled surface (bottom left)
 			Instantiate(angledtileprefab, new Vector3(x, y, 0), transform.rotation);
 		} else if(red == 3 && green == 1 && blue == 1) { //light red - angled surface (bottom right)
@@ -143,7 +151,7 @@ public class levelcheck : MonoBehaviour {
 		} else if(red == 1 && green == 0 && blue == 0) { //darker red
 		}
 		
-		//greens for player stuff (spawn, checkpoints, etc)
+		//Greens - for player stuff (spawn, checkpoints, text popup triggers, etc)
 		if(red == 2 && green == 3 && blue == 2) { //lighter green
 		} else if(red == 1 && green == 3 && blue == 1) { //light green
 		} else if(red == 0 && green == 3 && blue == 0) { //green - player spawn
@@ -156,7 +164,7 @@ public class levelcheck : MonoBehaviour {
 		} else if(red == 0 && green == 1 && blue == 0) { //darker green
 		}
 		
-		//blues for (non ability specific) interactive elements
+		//Blues - for (non ability specific) interactive elements
 		if(red == 2 && green == 2 && blue == 3) { //lighter blue - lever (facing right)
 			Instantiate(leverprefab, new Vector3(x, y, 0), Quaternion.Euler(0,-180,0));
 		} else if(red == 1 && green == 1 && blue == 3) { //light blue - lever (facing left)
@@ -178,7 +186,8 @@ public class levelcheck : MonoBehaviour {
 		}
 		
 		
-		//secondary colours
+		//Secondary colours
+        //Yellows - Tunnel surfaces and Wires
 		if(red == 3 && green == 3 && blue == 2) { //lighter yellow - thin floor/ceiling
 			Instantiate(thinblockhprefab, new Vector3(x, y, 0), transform.rotation);
 		} else if(red == 3 && green == 3 && blue == 1) { //light yellow - thin wall
@@ -193,6 +202,7 @@ public class levelcheck : MonoBehaviour {
 		} else if(red == 1 && green == 1 && blue == 0) { //darker yellow
 		}
 		
+        //Magentas - 'Observing' ability cancelling stuff
 		if(red == 3 && green == 2 && blue == 3) { //lighter magenta
 		} else if(red == 3 && green == 1 && blue == 3) { //light magenta
 		} else if(red == 3 && green == 0 && blue == 3) { //magenta
@@ -201,6 +211,7 @@ public class levelcheck : MonoBehaviour {
 		} else if(red == 1 && green == 1 && blue == 0) { //darker magenta
 		}
 		
+        //Cyans
 		if(red == 2 && green == 3 && blue == 3) { //lighter cyan
 		} else if(red == 1 && green == 3 && blue == 3) { //light cyan
 		} else if(red == 0 && green == 3 && blue == 3) { //cyan
@@ -210,37 +221,43 @@ public class levelcheck : MonoBehaviour {
 		}
 		
 		
-		//tertiary colours
+		//Tertiary colours
+        //Pinks
 		if(red == 3 && green == 1 && blue == 2) { //light pink
 		} else if(red == 3 && green == 0 && blue == 2) { //pink
 		} else if(red == 3 && green == 0 && blue == 1) { //strong pink
 		} else if(red == 2 && green == 0 && blue == 1) { //dark pink
 		}
 		
+        //Oranges
 		if(red == 3 && green == 2 && blue == 1) { //light orange
 		} else if(red == 3 && green == 2 && blue == 0) { //orange
 		} else if(red == 3 && green == 1 && blue == 0) { //strong orange
 		} else if(red == 2 && green == 1 && blue == 0) { //dark orange
 		}
 		
+        //Limes
 		if(red == 2 && green == 3 && blue == 1) { //light lime
 		} else if(red == 2 && green == 3 && blue == 0) { //lime
 		} else if(red == 1 && green == 3 && blue == 0) { //strong lime
 		} else if(red == 1 && green == 2 && blue == 0) { //dark lime
 		}
 		
+        //Teals
 		if(red == 1 && green == 3 && blue == 2) { //light teal
 		} else if(red == 0 && green == 3 && blue == 2) { //teal
 		} else if(red == 0 && green == 3 && blue == 1) { //strong teal
 		} else if(red == 0 && green == 2 && blue == 1) { //dark teal
 		}
 		
+        //Cobalts
 		if(red == 1 && green == 2 && blue == 3) { //light cobalt
 		} else if(red == 0 && green == 2 && blue == 3) { //cobalt
 		} else if(red == 0 && green == 1 && blue == 3) { //strong cobalt
 		} else if(red == 0 && green == 1 && blue == 2) { //dark cobalt
 		}
 		
+        //Purples
 		if(red == 2 && green == 1 && blue == 3) { //light purple
 		} else if(red == 2 && green == 0 && blue == 3) { //purple
 		} else if(red == 1 && green == 0 && blue == 3) { //strong purple

@@ -145,6 +145,14 @@ public class QuantumAbilities : MonoBehaviour {
 		}
 	}
 
+    //cancel light mode
+    public void CancelLightMode(){
+        this.transform.position = Lightform.position;
+        this.GetComponent<Rigidbody>().velocity = Lightform.gameObject.GetComponent<Rigidbody>().velocity;
+        Lightform.position = new Vector3(2, 999, 0);
+        InLightForm = false;
+    }
+
 	//cancel superpositions and entanglements
     public void KillAllClones(){
         for (int i = 0; i < SuperposClones.Count; i++){
