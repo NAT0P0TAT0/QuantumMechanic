@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using System.Text.RegularExpressions;
 
 public class levelcheck : MonoBehaviour {
 	private int levelnum = 0;
@@ -75,6 +76,20 @@ public class levelcheck : MonoBehaviour {
     public Transform wireprefab;
 	private Color pixelcol;
 	void loadlevel(int levelid){
+		//Save player progress by getting chapter and level numbers
+		string numbersOnly = Regex.Replace(SceneManager.GetActiveScene().name, "[^0-9]", "");
+		int chapternum = int.Parse(numbersOnly);
+		int templevelnum = levelid+1;
+		//update save if current chapter/level is later than saved chapter/level
+		int savedChapter = PlayerPrefs.GetInt("PlayersChapter");
+		int savedLevel = PlayerPrefs.GetInt("PlayersLevel");
+		if(chapternum > savedChapter){
+			PlayerPrefs.SetInt("PlayersChapter", chapternum);
+			PlayerPrefs.SetInt("PlayersLevel", templevelnum);
+		} else if(templevelnum > savedLevel){
+			PlayerPrefs.SetInt("PlayersLevel", templevelnum);
+		}
+		
         //disable light mode
         GameObject.Find("Player-char").GetComponent<QuantumAbilities>().CancelLightMode();
 
