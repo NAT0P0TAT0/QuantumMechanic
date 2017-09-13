@@ -23,6 +23,7 @@ public class QuantumAbilities : MonoBehaviour {
     public float SuperPositionLifeTime = 15;
     public float EntanglementLifeTime = 10;
     private float buttonHold = 0;
+	private bool inGlass = false;
 	private List<Transform> SuperposClones = new List<Transform>();
 	private List<Transform> EntangledClones = new List<Transform>();
 
@@ -34,6 +35,12 @@ public class QuantumAbilities : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         playerpos = Player.position;
+		
+		//check if player has left glass area after light mode shouldve been disabled
+		if(InLightForm && inGlass){
+			CancelLightMode(false);
+		}
+		
 		//disable other abilities while in light mode
 		if(!InLightForm){
 			//SuperPosition Ability is usable
@@ -83,17 +90,13 @@ public class QuantumAbilities : MonoBehaviour {
             if ((Input.GetKey(KeyCode.Keypad3) || Input.GetKey(KeyCode.Alpha3)) && Time.timeSinceLevelLoad > WavedualityTimeout){
 				WavedualityTimeout = Time.timeSinceLevelLoad + 0.25f;
 				if(InLightForm){
-					this.transform.position = Lightform.position;
-					this.GetComponent<Rigidbody>().velocity = Lightform.gameObject.GetComponent<Rigidbody>().velocity;
-					Lightform.position = new Vector3(2,999,0);
-					InLightForm = false;
+					CancelLightMode(false);
 				} else {
 					//turn player into light form
 					Lightform.gameObject.GetComponent<Rigidbody>().velocity = this.GetComponent<Rigidbody>().velocity;
 					Lightform.position = new Vector3(playerpos.x, playerpos.y, 0);
 					InLightForm = true;
 					this.transform.position = new Vector3(2,999,0);
-                    //KillAllClones();
 				}
 			}
 		}
@@ -145,12 +148,25 @@ public class QuantumAbilities : MonoBehaviour {
 		}
 	}
 
-    //cancel light mode
-    public void CancelLightMode(){
-        this.transform.position = Lightform.position;
-        this.GetComponent<Rigidbody>().velocity = Lightform.gameObject.GetComponent<Rigidbody>().velocity;
-        Lightform.position = new Vector3(2, 999, 0);
-        InLightForm = false;
+    //cancel light mode if player is not in glass, if they are wait until they leave
+    public void CancelLightMode(bool levelloading){
+		inGlass = false;
+		if(!levelloading){
+			foreach(GameObject fooObj in GameObject.FindGameObjectsWithTag("ground")){
+				if (fooObj.name.Contains("GlassBlock")){
+					float dist = Vector3.Distance(Lightform.position, fooObj.transform.position);
+					if(dist < 0.75f){
+						inGlass = true;
+					}
+				}
+			}
+		}
+		if(!inGlass){
+			this.transform.position = Lightform.position;
+			this.GetComponent<Rigidbody>().velocity = Lightform.gameObject.GetComponent<Rigidbody>().velocity;
+			Lightform.position = new Vector3(2, 999, 0);
+			InLightForm = false;
+		}
     }
 
 	//cancel superpositions and entanglements

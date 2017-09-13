@@ -26,10 +26,7 @@ public class LightFormPlayer : MonoBehaviour {
 			
 			//turn back
 			if (Time.timeSinceLevelLoad > despawnTime){
-				GameObject.Find("Player-char").transform.position = playerpos;
-				GameObject.Find("Player-char").GetComponent<Rigidbody>().velocity = this.GetComponent<Rigidbody>().velocity;
-				this.transform.position = new Vector3(2,999,0);
-				GameObject.Find("Player-char").GetComponent<QuantumAbilities>().InLightForm = false;
+				GameObject.Find("Player-char").GetComponent<QuantumAbilities>().CancelLightMode(false);
 			}
 		} else {
 			despawnTime = Time.timeSinceLevelLoad + 5f;

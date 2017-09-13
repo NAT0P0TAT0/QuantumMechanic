@@ -64,6 +64,7 @@ public class levelcheck : MonoBehaviour {
     }
 	
 	public Transform blockprefab;
+	public Transform fakeblockprefab;
 	public Transform backwallprefab;
 	public Transform thinblockvprefab;
 	public Transform thinblockhprefab;
@@ -91,7 +92,7 @@ public class levelcheck : MonoBehaviour {
 		}
 		
         //disable light mode
-        GameObject.Find("Player-char").GetComponent<QuantumAbilities>().CancelLightMode();
+        GameObject.Find("Player-char").GetComponent<QuantumAbilities>().CancelLightMode(true);
 
 		finished = false;
 		ending = false;
@@ -142,9 +143,10 @@ public class levelcheck : MonoBehaviour {
 		//define which of the 64 different shades the pixel is, shades can be seen in the "Level colour key" image
 
         //Greys - for static blocks
-		if(red == 3 && green  == 3 && blue  == 3){ //white - standard solid tile
+		if(red == 3 && green  == 3 && blue  == 3){ //white - standard tile
 			Instantiate(blockprefab, new Vector3(x, y, 0), transform.rotation);
-		} else if(red == 2 && green  == 2 && blue  == 2){ //light grey
+		} else if(red == 2 && green  == 2 && blue  == 2){ //light grey - intangible standard tile
+			Instantiate(fakeblockprefab, new Vector3(x, y, 0), transform.rotation);
 		} else if(red == 1 && green  == 1 && blue  == 1){ //dark grey - back wall tile
 			Instantiate(backwallprefab, new Vector3(x, y, 0.5f), transform.rotation);
 		}
