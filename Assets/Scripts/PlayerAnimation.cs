@@ -28,7 +28,7 @@ public class PlayerAnimation : MonoBehaviour {
 			this.gameObject.transform.GetChild(0).transform.localScale = new Vector3(1, 2.2f, 1);
         }
 		//check if player is jumping or falling
-		if (!this.GetComponent<playercontroller>().onground){
+		if (!GameObject.Find("Player-char").GetComponent<playercontroller>().onground){
 			float vertSpeed = this.GetComponent<Rigidbody>().velocity.y;
 			if (vertSpeed > 0){
 				PlayAnimation(jumpSprites);

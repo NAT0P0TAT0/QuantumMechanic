@@ -17,8 +17,7 @@ public class QuantumAbilities : MonoBehaviour {
 	public int maxClones = 3;
 	private int cloneCount = 0;
 	public bool InLightForm = false;
-    private float SuperpositionTimeout = 0;
-    private float EntanglementTimeout = 0;
+	private bool usingTunnel = false;
     private float WavedualityTimeout = 0;
     public float SuperPositionLifeTime = 15;
     public float EntanglementLifeTime = 10;
@@ -65,7 +64,6 @@ public class QuantumAbilities : MonoBehaviour {
                             }
                         }
                     } else {//create superposition clone
-                        SuperpositionTimeout = Time.timeSinceLevelLoad + 0.5f;
 						if(cloneCount < maxClones){
 							SpawnClone(0, playerpos.x, playerpos.y);
 						}
@@ -78,9 +76,20 @@ public class QuantumAbilities : MonoBehaviour {
 			//Tunnelling Ability is usable
 			if(Tunneling){
                 if (Input.GetKey(KeyCode.Keypad2) || Input.GetKey(KeyCode.Alpha2)){
-                    this.gameObject.layer = LayerMask.NameToLayer("Tunneling");
+					if(!usingTunnel){
+						this.gameObject.layer = LayerMask.NameToLayer("Tunneling");
+						Renderer rend = this.transform.GetChild(0).GetComponent<Renderer>();
+						rend.material.shader = Shader.Find("Standard");
+						rend.material.color = new Color(0.2f, 1, 0.1f, 1);
+					}
+					usingTunnel = true;
                 } else {
-                    this.gameObject.layer = LayerMask.NameToLayer("Player");
+					if(usingTunnel){
+						this.gameObject.layer = LayerMask.NameToLayer("Player");
+						Renderer rend = this.transform.GetChild(0).GetComponent<Renderer>();
+						rend.material.shader = Shader.Find("Unlit/Transparent Cutout");
+					}
+					usingTunnel = false;
 				}
 			}
 		}
@@ -92,6 +101,7 @@ public class QuantumAbilities : MonoBehaviour {
 				if(InLightForm){
 					CancelLightMode(false);
 				} else {
+					KillAllClones();
 					//turn player into light form
 					Lightform.gameObject.GetComponent<Rigidbody>().velocity = this.GetComponent<Rigidbody>().velocity;
 					Lightform.position = new Vector3(playerpos.x, playerpos.y, 0);
@@ -128,10 +138,9 @@ public class QuantumAbilities : MonoBehaviour {
 			newClone.gameObject.GetComponent<CloneDespawner>().CloneID = SuperposClones.Count;
 		} else if(clonetype == 1){//entangled copy
 			Transform newClone = Instantiate(EntangledClone, new Vector3(X, Y, 0), transform.rotation);
-			newClone.gameObject.GetComponent<playercontroller>().clone = true;
-			newClone.gameObject.GetComponent<playercontroller>().despawnTime = Time.timeSinceLevelLoad + EntanglementLifeTime;
+			newClone.gameObject.GetComponent<EntangledClone>().despawnTime = Time.timeSinceLevelLoad + EntanglementLifeTime;
 			EntangledClones.Add(newClone);
-			newClone.gameObject.GetComponent<playercontroller>().CloneID = EntangledClones.Count;
+			newClone.gameObject.GetComponent<EntangledClone>().CloneID = EntangledClones.Count;
 		}
 	}
 	

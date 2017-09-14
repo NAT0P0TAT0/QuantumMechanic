@@ -126,7 +126,6 @@ public class levelcheck : MonoBehaviour {
 		GameObject.Find("Main Camera").GetComponent<Cameracontrol>().levelheight = levelcodes[levelid].height;
 		GameObject.Find("Main Camera").GetComponent<Cameracontrol>().Xlimit = levelcodes[levelid].width;
 	}
-	private string templatepath = "";
 	public float backgroundscale = 0.25f;
 	public float middlegroundscale = 0.5f;
 	void spawntile(int x, int y, int levelid){
@@ -199,7 +198,7 @@ public class levelcheck : MonoBehaviour {
 		} else if(red == 0 && green == 0 && blue == 1) { //darker blue - button
 			Instantiate(backwallprefab, new Vector3(x, y, 0.5f), transform.rotation);
 			Instantiate(wireprefab, new Vector3(x, y, 0.515f), transform.rotation);
-			Transform newbutton = Instantiate(buttonwallprefab, new Vector3(x, y, 0), transform.rotation);
+			Instantiate(buttonwallprefab, new Vector3(x, y, 0), transform.rotation);
 		}
 		
 		

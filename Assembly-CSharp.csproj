@@ -63,6 +63,7 @@
      <Compile Include="Assets\Scripts\Cameracontrol.cs" />
      <Compile Include="Assets\Scripts\CloneDespawner.cs" />
      <Compile Include="Assets\Scripts\end.cs" />
+     <Compile Include="Assets\Scripts\EntangledClone.cs" />
      <Compile Include="Assets\Scripts\exit.cs" />
      <Compile Include="Assets\Scripts\levelcheck.cs" />
      <Compile Include="Assets\Scripts\lever.cs" />
