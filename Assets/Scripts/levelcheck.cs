@@ -26,6 +26,12 @@ public class levelcheck : MonoBehaviour {
             levelcodes[i] = (Texture2D)textures[i];
         }
 		lastlevel = levelcodes.Length;
+		//see if player continued mid-chapter from main menu, if not just load level 1
+		foreach(GameObject fooObj in GameObject.FindGameObjectsWithTag("LevelContinue")){
+			levelnum = int.Parse(fooObj.name)-1;
+			Destroy(fooObj);
+		}
+		//load level
 		loadlevel(levelnum);
 	}
 	
