@@ -74,7 +74,9 @@
      <Compile Include="Assets\Scripts\parallax.cs" />
      <Compile Include="Assets\Scripts\PlayerAnimation.cs" />
      <Compile Include="Assets\Scripts\playercontroller.cs" />
+     <Compile Include="Assets\Scripts\PopupTrigger.cs" />
      <Compile Include="Assets\Scripts\QuantumAbilities.cs" />
+     <Compile Include="Assets\Scripts\TextPopups.cs" />
      <Compile Include="Assets\Scripts\ToggleBlock.cs" />
      <Compile Include="Assets\Scripts\Wire.cs" />
      <None Include="Assets\Parabox Primitives\README.txt" />

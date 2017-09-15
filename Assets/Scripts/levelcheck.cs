@@ -12,7 +12,7 @@ public class levelcheck : MonoBehaviour {
 	
 	private string _imagePath = "Levels";
 	private string levelgroup = "";
-    public string nextLevel = "end";
+    public string nextScene = "end";
     private Texture2D[] levelcodes;
 	void Start(){
 		//load levels from image files
@@ -65,7 +65,7 @@ public class levelcheck : MonoBehaviour {
 		if(levelnum < lastlevel){
 			loadlevel(levelnum);
 		} else {
-            SceneManager.LoadScene(nextLevel);
+            SceneManager.LoadScene(nextScene);
 		}
     }
 	
@@ -81,6 +81,8 @@ public class levelcheck : MonoBehaviour {
 	public Transform buttonprefab;
 	public Transform buttonwallprefab;
     public Transform wireprefab;
+	public Transform popuptriggerprefab;
+	private int popupid = 0;
 	private Color pixelcol;
 	void loadlevel(int levelid){
 		//Save player progress by getting chapter and level numbers
@@ -104,8 +106,9 @@ public class levelcheck : MonoBehaviour {
 		ending = false;
 		
 		//remove existing objects from previous levels
+		popupid = 0;
 		foreach(GameObject fooObj in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()){
-            //move wires to fix bug where they connect to where other wires were in the previous level
+            //move wires to fix bug where they connect to places other wires were in the previous level
             if (fooObj.name.Contains("Wire")){
                 fooObj.transform.position = new Vector3(-999, -999, -999);
             }
@@ -174,8 +177,15 @@ public class levelcheck : MonoBehaviour {
 		}
 		
 		//Greens - for player stuff (spawn, checkpoints, text popup triggers, etc)
-		if(red == 2 && green == 3 && blue == 2) { //lighter green
-		} else if(red == 1 && green == 3 && blue == 1) { //light green
+		if(red == 2 && green == 3 && blue == 2) { //lighter green - text trigger with backwall
+			Instantiate(backwallprefab, new Vector3(x, y, 0.5f), transform.rotation);
+			Transform fooObj = Instantiate(popuptriggerprefab, new Vector3(x, y, 0), transform.rotation);
+			fooObj.GetComponent<PopupTrigger>().PopupID = popupid;
+			popupid++;
+		} else if(red == 1 && green == 3 && blue == 1) { //light green - text trigger
+			Transform fooObj = Instantiate(popuptriggerprefab, new Vector3(x, y, 0), transform.rotation);
+			fooObj.GetComponent<PopupTrigger>().PopupID = popupid;
+			popupid++;
 		} else if(red == 0 && green == 3 && blue == 0) { //green - player spawn
 			GameObject.Find("Player-char").transform.position = new Vector3(x,y,0);
 			GameObject.Find("Player-char").GetComponent<Rigidbody>().velocity = Vector3.zero;
@@ -285,5 +295,9 @@ public class levelcheck : MonoBehaviour {
 		} else if(red == 1 && green == 0 && blue == 3) { //strong purple
 		} else if(red == 1 && green == 0 && blue == 2) { //dark purple
 		}
+	}
+	
+	public int GetLevelNum(){
+		return levelnum+1;
 	}
 }
