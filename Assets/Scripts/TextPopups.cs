@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TextPopups : MonoBehaviour {
+
+	public Texture2D DefaultPic;
 	public int[] level;
 	public Texture2D[] picture;
 	public string[] name;
@@ -43,11 +45,21 @@ public class TextPopups : MonoBehaviour {
 			//show name
 			Vector2 Namesize = new Vector2(BGsize.x*0.2f, BGsize.y*0.2f);
 			Vector2 Namepos = new Vector2(BGpos.x+(BGsize.x*0.01f), BGpos.y+(BGsize.y*0.75f));
-			GUI.Label(new Rect(Namepos.x, Namepos.y, Namesize.x, Namesize.y), name[openID], labelstyle);
+			labelstyle.alignment = TextAnchor.MiddleCenter;
+			if(name[openID] != ""){
+				GUI.Label(new Rect(Namepos.x, Namepos.y, Namesize.x, Namesize.y), name[openID], labelstyle);
+			} else {
+				GUI.Label(new Rect(Namepos.x, Namepos.y, Namesize.x, Namesize.y), "????", labelstyle);
+			}
+			labelstyle.alignment = TextAnchor.UpperLeft;
 			//show pic
-			Vector2 Picsize = new Vector2(BGsize.x*0.21f+10, BGsize.y*0.63f+10);
-			Vector2 Picpos = new Vector2(BGpos.x+(BGsize.x*0.01f)-5, BGpos.y+(BGsize.y*0.04f)-5);
-			GUI.Label(new Rect(Picpos.x, Picpos.y, Picsize.x, Picsize.y), picture[openID], labelstyle);
+			Vector2 Picsize = new Vector2(BGsize.x*0.21f+12, BGsize.y*0.63f+12);
+			Vector2 Picpos = new Vector2(BGpos.x+(BGsize.x*0.01f)-6, BGpos.y+(BGsize.y*0.04f)-6);
+			if(picture[openID] != null){
+				GUI.Label(new Rect(Picpos.x, Picpos.y, Picsize.x, Picsize.y), picture[openID], labelstyle);
+			} else {
+				GUI.Label(new Rect(Picpos.x, Picpos.y, Picsize.x, Picsize.y), DefaultPic, labelstyle);
+			}
 			
 			//hide popup
 			if (Input.GetKeyDown(KeyCode.E)){
