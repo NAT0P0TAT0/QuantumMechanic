@@ -6,10 +6,8 @@ public class CloneDespawner : MonoBehaviour {
     
     public float despawnTime = 9999999999999999999;
 	public int CloneID = 0;
-	private Transform Player;
 	
 	void Start (){
-        Player = GameObject.Find("Player-char").transform;
 	}
 
 	// Update is called once per frame

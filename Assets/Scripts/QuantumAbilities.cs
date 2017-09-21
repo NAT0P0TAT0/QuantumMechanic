@@ -17,12 +17,12 @@ public class QuantumAbilities : MonoBehaviour {
 	public int maxClones = 3;
 	private int cloneCount = 0;
 	public bool InLightForm = false;
-    private float SuperpositionTimeout = 0;
-    private float EntanglementTimeout = 0;
+	private bool usingTunnel = false;
     private float WavedualityTimeout = 0;
     public float SuperPositionLifeTime = 15;
     public float EntanglementLifeTime = 10;
     private float buttonHold = 0;
+	private bool inGlass = false;
 	private List<Transform> SuperposClones = new List<Transform>();
 	private List<Transform> EntangledClones = new List<Transform>();
 
@@ -34,6 +34,12 @@ public class QuantumAbilities : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         playerpos = Player.position;
+		
+		//check if player has left glass area after light mode shouldve been disabled
+		if(InLightForm && inGlass){
+			CancelLightMode(false);
+		}
+		
 		//disable other abilities while in light mode
 		if(!InLightForm){
 			//SuperPosition Ability is usable
@@ -58,7 +64,6 @@ public class QuantumAbilities : MonoBehaviour {
                             }
                         }
                     } else {//create superposition clone
-                        SuperpositionTimeout = Time.timeSinceLevelLoad + 0.5f;
 						if(cloneCount < maxClones){
 							SpawnClone(0, playerpos.x, playerpos.y);
 						}
@@ -71,9 +76,20 @@ public class QuantumAbilities : MonoBehaviour {
 			//Tunnelling Ability is usable
 			if(Tunneling){
                 if (Input.GetKey(KeyCode.Keypad2) || Input.GetKey(KeyCode.Alpha2)){
-                    this.gameObject.layer = LayerMask.NameToLayer("Tunneling");
+					if(!usingTunnel){
+						this.gameObject.layer = LayerMask.NameToLayer("Tunneling");
+						Renderer rend = this.transform.GetChild(0).GetComponent<Renderer>();
+						rend.material.shader = Shader.Find("Standard");
+						rend.material.color = new Color(0.2f, 1, 0.1f, 1);
+					}
+					usingTunnel = true;
                 } else {
-                    this.gameObject.layer = LayerMask.NameToLayer("Player");
+					if(usingTunnel){
+						this.gameObject.layer = LayerMask.NameToLayer("Player");
+						Renderer rend = this.transform.GetChild(0).GetComponent<Renderer>();
+						rend.material.shader = Shader.Find("Unlit/Transparent Cutout");
+					}
+					usingTunnel = false;
 				}
 			}
 		}
@@ -83,17 +99,14 @@ public class QuantumAbilities : MonoBehaviour {
             if ((Input.GetKey(KeyCode.Keypad3) || Input.GetKey(KeyCode.Alpha3)) && Time.timeSinceLevelLoad > WavedualityTimeout){
 				WavedualityTimeout = Time.timeSinceLevelLoad + 0.25f;
 				if(InLightForm){
-					this.transform.position = Lightform.position;
-					this.GetComponent<Rigidbody>().velocity = Lightform.gameObject.GetComponent<Rigidbody>().velocity;
-					Lightform.position = new Vector3(2,999,0);
-					InLightForm = false;
+					CancelLightMode(false);
 				} else {
+					KillAllClones();
 					//turn player into light form
 					Lightform.gameObject.GetComponent<Rigidbody>().velocity = this.GetComponent<Rigidbody>().velocity;
 					Lightform.position = new Vector3(playerpos.x, playerpos.y, 0);
 					InLightForm = true;
 					this.transform.position = new Vector3(2,999,0);
-                    //KillAllClones();
 				}
 			}
 		}
@@ -125,10 +138,9 @@ public class QuantumAbilities : MonoBehaviour {
 			newClone.gameObject.GetComponent<CloneDespawner>().CloneID = SuperposClones.Count;
 		} else if(clonetype == 1){//entangled copy
 			Transform newClone = Instantiate(EntangledClone, new Vector3(X, Y, 0), transform.rotation);
-			newClone.gameObject.GetComponent<playercontroller>().clone = true;
-			newClone.gameObject.GetComponent<playercontroller>().despawnTime = Time.timeSinceLevelLoad + EntanglementLifeTime;
+			newClone.gameObject.GetComponent<EntangledClone>().despawnTime = Time.timeSinceLevelLoad + EntanglementLifeTime;
 			EntangledClones.Add(newClone);
-			newClone.gameObject.GetComponent<playercontroller>().CloneID = EntangledClones.Count;
+			newClone.gameObject.GetComponent<EntangledClone>().CloneID = EntangledClones.Count;
 		}
 	}
 	
@@ -144,6 +156,27 @@ public class QuantumAbilities : MonoBehaviour {
 			Destroy(EntangledClones[cloneID].gameObject);
 		}
 	}
+
+    //cancel light mode if player is not in glass, if they are wait until they leave
+    public void CancelLightMode(bool levelloading){
+		inGlass = false;
+		if(!levelloading){
+			foreach(GameObject fooObj in GameObject.FindGameObjectsWithTag("ground")){
+				if (fooObj.name.Contains("GlassBlock")){
+					float dist = Vector3.Distance(Lightform.position, fooObj.transform.position);
+					if(dist < 0.75f){
+						inGlass = true;
+					}
+				}
+			}
+		}
+		if(!inGlass){
+			this.transform.position = Lightform.position;
+			this.GetComponent<Rigidbody>().velocity = Lightform.gameObject.GetComponent<Rigidbody>().velocity;
+			Lightform.position = new Vector3(2, 999, 0);
+			InLightForm = false;
+		}
+    }
 
 	//cancel superpositions and entanglements
     public void KillAllClones(){

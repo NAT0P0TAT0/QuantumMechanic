@@ -11,9 +11,6 @@ public class playercontroller : MonoBehaviour {
 	public float deceleration = 0.25f;
 	public float maxspeed = 4;
 	public float jumpheight = 7.5f;
-    public bool clone = false;
-	public int CloneID = 0;
-    public float despawnTime = 9999999999999999999;
 
 	// Use this for initialization
 	void Start () {
@@ -22,14 +19,10 @@ public class playercontroller : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (!clone) {
-            //restart level if player somehow falls out of level
-            if (this.transform.position.y < -2) {
-                GameObject.Find("LevelLoader").GetComponent<levelcheck>().RestartLevel();
-            }
-        } else if(Time.timeSinceLevelLoad > despawnTime) {//despawn clones after timeout
-            Destroy(this.gameObject);
-        }
+		//restart level if player somehow falls out of level
+		if (this.transform.position.y < -2) {
+			GameObject.Find("LevelLoader").GetComponent<levelcheck>().RestartLevel();
+		}
 		//manage movement
 		if(Time.timeScale != 0){
             if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)){
@@ -77,7 +70,7 @@ public class playercontroller : MonoBehaviour {
 	
 	//detecting if player can jump
 	void OnTriggerEnter(Collider other) {
-        if (other.tag == "ground" || other.tag == "clone" || other.tag == "danger") {
+        if (other.tag == "ground" || other.tag == "clone") {
 			if (!onground){
 				//prevent landing friction stopping player moving sideways
 				if (Input.GetKey(KeyCode.A)){
