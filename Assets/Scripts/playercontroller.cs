@@ -11,6 +11,11 @@ public class playercontroller : MonoBehaviour {
 	public float deceleration = 0.25f;
 	public float maxspeed = 4;
 	public float jumpheight = 7.5f;
+	public bool onbelt = false;
+	public bool beltleft = false;
+	private bool pressingLeft = false;
+	private bool pressingRight = false;
+	private bool pressingJump = false;
 
 	// Use this for initialization
 	void Start () {
@@ -23,13 +28,20 @@ public class playercontroller : MonoBehaviour {
 		if (this.transform.position.y < -2) {
 			GameObject.Find("LevelLoader").GetComponent<levelcheck>().RestartLevel();
 		}
+		//Detect keypresses
+			if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)){
+			pressingLeft = true;} else {pressingLeft = false;}
+			if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)){
+			pressingRight = true;} else {pressingRight = false;}
+			if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)){
+			pressingJump = true;} else {pressingJump = false;}
 		//manage movement
 		if(Time.timeScale != 0){
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)){
+            if (pressingLeft){
 				if (rb.velocity.x > -maxspeed){
 					rb.velocity = new Vector3(rb.velocity.x-acceleration, rb.velocity.y, 0);
 				}
-            } else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)){
+            } else if (pressingRight){
 				if (rb.velocity.x < maxspeed){
 					rb.velocity = new Vector3(rb.velocity.x+acceleration, rb.velocity.y, 0);
 				}
@@ -46,13 +58,33 @@ public class playercontroller : MonoBehaviour {
 					}
 				}
 			}
-            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)){
+            if (pressingJump){
 				if(onground){
 					rb.velocity = new Vector3(rb.velocity.x, jumpheight, 0);
 					onground = false;
 				}
 			}
 		}
+		//adjust speed if on conveyor belt
+		if(Time.timeScale != 0 && onbelt){
+			Vector3 speed = rb.velocity;
+			float beltAccell = 0.5f;
+			if(beltleft && speed.x > -3){
+				if(!pressingRight){
+					speed.x -= beltAccell;
+				} else if(speed.x > 0.75f) {
+					speed.x -= beltAccell;
+				}
+			} else if(speed.x < 3) {
+				if(!pressingLeft){
+					speed.x += beltAccell;
+				} else if(speed.x < -0.75f) {
+					speed.x += beltAccell;
+				}
+			}
+			rb.velocity = speed;
+		}
+		onbelt = false;
 		//disable friction when in air (prevents multiple bugs)
 		if (onground){
 			this.transform.GetComponent<Collider>().material.dynamicFriction = 0.75f;
@@ -72,11 +104,11 @@ public class playercontroller : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
         if (other.tag == "ground" || other.tag == "clone") {
 			if (!onground){
-				//prevent landing friction stopping player moving sideways
-				if (Input.GetKey(KeyCode.A)){
+				//prevent friction stopping player moving sideways when they land
+				if (pressingLeft){
 					rb.velocity = new Vector3(-acceleration*9, rb.velocity.y, 0);
 				}
-				if (Input.GetKey(KeyCode.D)){
+				if (pressingRight){
 					rb.velocity = new Vector3(acceleration*9, rb.velocity.y, 0);
 				}
 			}

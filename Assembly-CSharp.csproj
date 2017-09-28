@@ -62,6 +62,7 @@
      <Compile Include="Assets\Scripts\button.cs" />
      <Compile Include="Assets\Scripts\Cameracontrol.cs" />
      <Compile Include="Assets\Scripts\CloneDespawner.cs" />
+     <Compile Include="Assets\Scripts\conveyorbelt.cs" />
      <Compile Include="Assets\Scripts\end.cs" />
      <Compile Include="Assets\Scripts\EntangledClone.cs" />
      <Compile Include="Assets\Scripts\exit.cs" />

@@ -70,12 +70,12 @@ public class levelcheck : MonoBehaviour {
     }
 	
 	public Transform blockprefab;
-	public Transform fakeblockprefab;
 	public Transform backwallprefab;
 	public Transform thinblockvprefab;
 	public Transform thinblockhprefab;
 	public Transform glassblockprefab;
 	public Transform angledtileprefab;
+	public Transform conveyorbeltprefab;
 	public Transform toggleblockprefab;
 	public Transform leverprefab;
 	public Transform buttonprefab;
@@ -150,11 +150,10 @@ public class levelcheck : MonoBehaviour {
 		
 		//define which of the 64 different shades the pixel is, shades can be seen in the "Level colour key" image
 
-        //Greys - for static blocks
+        //Greys - Static blocks
 		if(red == 3 && green  == 3 && blue  == 3){ //white - standard tile
 			Instantiate(blockprefab, new Vector3(x, y, 0), transform.rotation);
-		} else if(red == 2 && green  == 2 && blue  == 2){ //light grey - intangible standard tile
-			Instantiate(fakeblockprefab, new Vector3(x, y, 0), transform.rotation);
+		} else if(red == 2 && green  == 2 && blue  == 2){ //light grey
 		} else if(red == 1 && green  == 1 && blue  == 1){ //dark grey - back wall tile
 			Instantiate(backwallprefab, new Vector3(x, y, 0.5f), transform.rotation);
 		}
@@ -162,7 +161,7 @@ public class levelcheck : MonoBehaviour {
 		
 		
 		//Primary colours
-		//Reds - for wave duality stuff
+		//Reds - Wave duality stuff
 		if(red == 3 && green == 2 && blue == 2) { //lighter red - angled surface (bottom left)
 			Instantiate(angledtileprefab, new Vector3(x, y, 0), transform.rotation);
 		} else if(red == 3 && green == 1 && blue == 1) { //light red - angled surface (bottom right)
@@ -173,10 +172,10 @@ public class levelcheck : MonoBehaviour {
 			Instantiate(angledtileprefab, new Vector3(x, y, 0), Quaternion.Euler(180,0,0));
 		} else if(red == 2 && green == 0 && blue == 0) { //dark red - angled surface (top right)
 			Instantiate(angledtileprefab, new Vector3(x, y, 0), Quaternion.Euler(180,180,0));
-		} else if(red == 1 && green == 0 && blue == 0) { //darker red
+		} else if(red == 1 && green == 0 && blue == 0) { //darker red - black surface that cancels lightform
 		}
 		
-		//Greens - for player stuff (spawn, checkpoints, text popup triggers, etc)
+		//Greens - Player stuff (spawn, checkpoints, text popup triggers, etc)
 		if(red == 2 && green == 3 && blue == 2) { //lighter green - text trigger with backwall
 			Instantiate(backwallprefab, new Vector3(x, y, 0.5f), transform.rotation);
 			Transform fooObj = Instantiate(popuptriggerprefab, new Vector3(x, y, 0), transform.rotation);
@@ -196,7 +195,7 @@ public class levelcheck : MonoBehaviour {
 		} else if(red == 0 && green == 1 && blue == 0) { //darker green
 		}
 		
-		//Blues - for (non ability specific) interactive elements
+		//Blues - Interactive elements
 		if(red == 2 && green == 2 && blue == 3) { //lighter blue - lever (facing right)
 			Instantiate(leverprefab, new Vector3(x, y, 0), Quaternion.Euler(0,-180,0));
 		} else if(red == 1 && green == 1 && blue == 3) { //light blue - lever (facing left)
@@ -205,7 +204,7 @@ public class levelcheck : MonoBehaviour {
 			Transform fooObj = Instantiate(toggleblockprefab, new Vector3(x, y, 0), transform.rotation);
 			GameObject fooChild = fooObj.Find("Block-Model").gameObject;
 			fooChild.GetComponent<Renderer>().enabled = true;
-		} else if(red == 1 && green == 1 && blue == 2) { //grey blue - toggleable block "off" (will replace with something else)
+		} else if(red == 1 && green == 1 && blue == 2) { //grey blue - toggleable block "off"
 			Transform fooObj = Instantiate(toggleblockprefab, new Vector3(x, y, 1), transform.rotation);
 			GameObject fooChild = fooObj.Find("Block-Model").gameObject;
 			fooChild.GetComponent<Renderer>().enabled = false;
@@ -219,7 +218,7 @@ public class levelcheck : MonoBehaviour {
 		
 		
 		//Secondary colours
-        //Yellows - Tunnel surfaces and Wires
+        //Yellows - Tunnel surfaces, Wires and Conveyor belts
 		if(red == 3 && green == 3 && blue == 2) { //lighter yellow - thin floor/ceiling
 			Instantiate(thinblockhprefab, new Vector3(x, y, 0), transform.rotation);
 		} else if(red == 3 && green == 3 && blue == 1) { //light yellow - thin wall
@@ -230,8 +229,11 @@ public class levelcheck : MonoBehaviour {
 		} else if(red == 2 && green == 2 && blue == 1) { //grey yellow - wire on background tile
 			Instantiate(backwallprefab, new Vector3(x, y, 0.5f), transform.rotation);
 			Instantiate(wireprefab, new Vector3(x, y, 0.49f), transform.rotation);
-		} else if(red == 2 && green == 2 && blue == 0) { //dark yellow
-		} else if(red == 1 && green == 1 && blue == 0) { //darker yellow
+		} else if(red == 2 && green == 2 && blue == 0) { //dark yellow - conveyror belt (right)
+			Instantiate(conveyorbeltprefab, new Vector3(x, y, 0), transform.rotation);
+		} else if(red == 1 && green == 1 && blue == 0) { //darker yellow - conveyror belt (left)
+			Transform fooObj = Instantiate(conveyorbeltprefab, new Vector3(x, y, 0), transform.rotation);
+			fooObj.GetComponent<conveyorbelt>().left = true;
 		}
 		
         //Magentas - 'Observing' ability cancelling stuff
