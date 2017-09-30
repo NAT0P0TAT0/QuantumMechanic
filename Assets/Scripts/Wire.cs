@@ -21,7 +21,7 @@ public class Wire : MonoBehaviour {
 	void Start () {
 		//figure out what parts are connected
 		foreach(GameObject fooObj in GameObject.FindGameObjectsWithTag("object")){
-			if (fooObj.name.Contains("Wire") || fooObj.name.Contains("Button") || fooObj.name.Contains("Lever")){
+			if (fooObj.name.Contains("Wire") || fooObj.name.Contains("Button") || fooObj.name.Contains("Lever") || fooObj.name.Contains("Camera")){
 				if(fooObj.transform.position.y == this.transform.position.y + 1 && fooObj.transform.position.x == this.transform.position.x){up = true;}
 				if(fooObj.transform.position.x == this.transform.position.x + 1 && fooObj.transform.position.y == this.transform.position.y){right = true;}
 				if(fooObj.transform.position.y == this.transform.position.y - 1 && fooObj.transform.position.x == this.transform.position.x){down = true;}

@@ -81,6 +81,7 @@ public class levelcheck : MonoBehaviour {
 	public Transform buttonprefab;
 	public Transform buttonwallprefab;
     public Transform wireprefab;
+    public Transform cameraprefab;
 	public Transform popuptriggerprefab;
 	private int popupid = 0;
 	private Color pixelcol;
@@ -110,6 +111,9 @@ public class levelcheck : MonoBehaviour {
 		foreach(GameObject fooObj in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()){
             //move wires to fix bug where they connect to places other wires were in the previous level
             if (fooObj.name.Contains("Wire")){
+                fooObj.transform.position = new Vector3(-999, -999, -999);
+            }
+            if (fooObj.name.Contains("Toggle")){
                 fooObj.transform.position = new Vector3(-999, -999, -999);
             }
             //delete all the cloned prefabs - except for the angled blocks since their render model breaks if any of them is deleted for some stupid reason -_-
@@ -195,7 +199,7 @@ public class levelcheck : MonoBehaviour {
 		} else if(red == 0 && green == 1 && blue == 0) { //darker green
 		}
 		
-		//Blues - Interactive elements
+		//Blues - Non-ability interactive elements
 		if(red == 2 && green == 2 && blue == 3) { //lighter blue - lever (facing right)
 			Instantiate(leverprefab, new Vector3(x, y, 0), Quaternion.Euler(0,-180,0));
 		} else if(red == 1 && green == 1 && blue == 3) { //light blue - lever (facing left)
@@ -218,11 +222,12 @@ public class levelcheck : MonoBehaviour {
 		
 		
 		//Secondary colours
-        //Yellows - Tunnel surfaces, Wires and Conveyor belts
-		if(red == 3 && green == 3 && blue == 2) { //lighter yellow - thin floor/ceiling
-			Instantiate(thinblockhprefab, new Vector3(x, y, 0), transform.rotation);
-		} else if(red == 3 && green == 3 && blue == 1) { //light yellow - thin wall
-			Instantiate(thinblockvprefab, new Vector3(x, y, 0), transform.rotation);
+        //Yellows - More non-ability interactive elements
+		if(red == 3 && green == 3 && blue == 2) { //lighter yellow - security camera (right)
+			Transform fooObj = Instantiate(cameraprefab, new Vector3(x, y, 0), transform.rotation);
+			fooObj.GetComponent<SecurityCamera>().right = true;
+		} else if(red == 3 && green == 3 && blue == 1) { //light yellow - security camera (left)
+			Instantiate(cameraprefab, new Vector3(x, y, 0), transform.rotation);
 		} else if(red == 3 && green == 3 && blue == 0) { //yellow - wire on solid tile
 			Instantiate(blockprefab, new Vector3(x, y, 0), transform.rotation);
 			Instantiate(wireprefab, new Vector3(x, y, -0.5f), transform.rotation);
@@ -236,9 +241,11 @@ public class levelcheck : MonoBehaviour {
 			fooObj.GetComponent<conveyorbelt>().left = true;
 		}
 		
-        //Magentas - 'Observing' ability cancelling stuff
-		if(red == 3 && green == 2 && blue == 3) { //lighter magenta
-		} else if(red == 3 && green == 1 && blue == 3) { //light magenta
+        //Magentas
+		if(red == 3 && green == 2 && blue == 3) { //lighter magenta - thin floor/ceiling
+			Instantiate(thinblockhprefab, new Vector3(x, y, 0), transform.rotation);
+		} else if(red == 3 && green == 1 && blue == 3) { //light magenta - thin wall
+			Instantiate(thinblockvprefab, new Vector3(x, y, 0), transform.rotation);
 		} else if(red == 3 && green == 0 && blue == 3) { //magenta
 		} else if(red == 2 && green == 1 && blue == 2) { //grey magenta
 		} else if(red == 2 && green == 2 && blue == 0) { //dark magenta
