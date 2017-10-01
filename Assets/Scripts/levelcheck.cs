@@ -190,12 +190,14 @@ public class levelcheck : MonoBehaviour {
 			fooObj.GetComponent<PopupTrigger>().PopupID = popupid;
 			popupid++;
 		} else if(red == 0 && green == 3 && blue == 0) { //green - player spawn
+			GameObject.Find("EntryDoor").transform.position = new Vector3(x,y+0.5f,0.49f);
 			GameObject.Find("Player-char").transform.position = new Vector3(x,y,0);
 			GameObject.Find("Player-char").GetComponent<Rigidbody>().velocity = Vector3.zero;
 			GameObject.Find("Player-char").GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-		} else if(red == 1 && green == 2 && blue == 1) { //grey green
-		} else if(red == 0 && green == 2 && blue == 0) { //dark green - level end (will replace with repair spots)
-			GameObject.Find("Exit").transform.position = new Vector3(x,y,0.5f);
+		} else if(red == 1 && green == 2 && blue == 1) { //grey green - broken machine
+		
+		} else if(red == 0 && green == 2 && blue == 0) { //dark green - level exit
+			GameObject.Find("Exit").transform.position = new Vector3(x,y,0.49f);
 		} else if(red == 0 && green == 1 && blue == 0) { //darker green
 		}
 		

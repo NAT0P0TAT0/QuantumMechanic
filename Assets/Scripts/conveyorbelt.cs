@@ -6,6 +6,13 @@ public class conveyorbelt : MonoBehaviour {
 
 	public bool left = false;
 	
+	void Start(){
+		if(left){
+			Vector3 newscale = new Vector3(-this.transform.localScale.x, this.transform.localScale.y, this.transform.localScale.z);
+			this.transform.localScale = newscale;
+		}
+	}
+	
 	void OnTriggerStay(Collider other) {
 		if(other.gameObject.name == "Player-char" || other.gameObject.name.Contains("Entangled")){//move player
 			GameObject.Find("Player-char").GetComponent<playercontroller>().onbelt = true;

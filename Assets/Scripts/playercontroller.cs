@@ -28,6 +28,7 @@ public class playercontroller : MonoBehaviour {
 		if (this.transform.position.y < -2) {
 			GameObject.Find("LevelLoader").GetComponent<levelcheck>().RestartLevel();
 		}
+		
 		//Detect keypresses
 			if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)){
 			pressingLeft = true;} else {pressingLeft = false;}
@@ -35,14 +36,20 @@ public class playercontroller : MonoBehaviour {
 			pressingRight = true;} else {pressingRight = false;}
 			if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)){
 			pressingJump = true;} else {pressingJump = false;}
+			
 		//manage movement
 		if(Time.timeScale != 0){
+			float tempMax = maxspeed;
             if (pressingLeft){
-				if (rb.velocity.x > -maxspeed){
+				if(onbelt && beltleft){tempMax = maxspeed*2.5f;}
+				Debug.Log(tempMax);
+				Debug.Log(rb.velocity.x);
+				if (rb.velocity.x > -tempMax){
 					rb.velocity = new Vector3(rb.velocity.x-acceleration, rb.velocity.y, 0);
 				}
             } else if (pressingRight){
-				if (rb.velocity.x < maxspeed){
+				if(onbelt && !beltleft){tempMax = maxspeed*2.5f;}
+				if (rb.velocity.x < tempMax){
 					rb.velocity = new Vector3(rb.velocity.x+acceleration, rb.velocity.y, 0);
 				}
 			} else {
@@ -65,26 +72,32 @@ public class playercontroller : MonoBehaviour {
 				}
 			}
 		}
+		
 		//adjust speed if on conveyor belt
 		if(Time.timeScale != 0 && onbelt){
 			Vector3 speed = rb.velocity;
 			float beltAccell = 0.5f;
-			if(beltleft && speed.x > -3){
-				if(!pressingRight){
-					speed.x -= beltAccell;
-				} else if(speed.x > 0.75f) {
-					speed.x -= beltAccell;
+			if(beltleft){
+				if(speed.x > -3){
+					if(!pressingRight){
+						speed.x -= beltAccell;
+					} else if(speed.x > 0.75f) {
+						speed.x -= beltAccell;
+					}
 				}
-			} else if(speed.x < 3) {
-				if(!pressingLeft){
-					speed.x += beltAccell;
-				} else if(speed.x < -0.75f) {
-					speed.x += beltAccell;
+			} else {
+				if(speed.x < 3) {
+					if(!pressingLeft){
+						speed.x += beltAccell;
+					} else if(speed.x < -0.75f) {
+						speed.x += beltAccell;
+					}
 				}
 			}
 			rb.velocity = speed;
 		}
 		onbelt = false;
+		
 		//disable friction when in air (prevents multiple bugs)
 		if (onground){
 			this.transform.GetComponent<Collider>().material.dynamicFriction = 0.75f;
