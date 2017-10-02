@@ -243,13 +243,17 @@ public class levelcheck : MonoBehaviour {
 			fooObj.GetComponent<conveyorbelt>().left = true;
 		}
 		
-        //Magentas
-		if(red == 3 && green == 2 && blue == 3) { //lighter magenta - thin floor/ceiling
+        //Magentas - Tunneling stuff
+		if(red == 3 && green == 2 && blue == 3) { //lighter magenta - thin floor/ceiling (with backwall)
+			Instantiate(backwallprefab, new Vector3(x, y, 0.5f), transform.rotation);
 			Instantiate(thinblockhprefab, new Vector3(x, y, 0), transform.rotation);
-		} else if(red == 3 && green == 1 && blue == 3) { //light magenta - thin wall
+		} else if(red == 3 && green == 1 && blue == 3) { //light magenta - thin wall (with backwall)
+			Instantiate(backwallprefab, new Vector3(x, y, 0.5f), transform.rotation);
 			Instantiate(thinblockvprefab, new Vector3(x, y, 0), transform.rotation);
-		} else if(red == 3 && green == 0 && blue == 3) { //magenta
-		} else if(red == 2 && green == 1 && blue == 2) { //grey magenta
+		} else if(red == 3 && green == 0 && blue == 3) { //magenta - thin floor/ceiling
+			Instantiate(thinblockhprefab, new Vector3(x, y, 0), transform.rotation);
+		} else if(red == 2 && green == 1 && blue == 2) { //grey magenta - thin wall
+			Instantiate(thinblockvprefab, new Vector3(x, y, 0), transform.rotation);
 		} else if(red == 2 && green == 2 && blue == 0) { //dark magenta
 		} else if(red == 1 && green == 1 && blue == 0) { //darker magenta
 		}

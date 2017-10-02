@@ -42,8 +42,6 @@ public class playercontroller : MonoBehaviour {
 			float tempMax = maxspeed;
             if (pressingLeft){
 				if(onbelt && beltleft){tempMax = maxspeed*2.5f;}
-				Debug.Log(tempMax);
-				Debug.Log(rb.velocity.x);
 				if (rb.velocity.x > -tempMax){
 					rb.velocity = new Vector3(rb.velocity.x-acceleration, rb.velocity.y, 0);
 				}
