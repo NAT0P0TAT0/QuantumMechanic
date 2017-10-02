@@ -41,7 +41,12 @@ public class TextPopups : MonoBehaviour {
 			//show text
 			Vector2 Contentsize = new Vector2(BGsize.x*0.7f, BGsize.y*0.86f);
 			Vector2 Contentpos = new Vector2(BGpos.x+(BGsize.x*0.25f), BGpos.y+(BGsize.y*0.08f));
+			RectOffset temppadding = labelstyle.padding;
+			temppadding.top += 5;
+			labelstyle.padding = temppadding;
 			GUI.Label(new Rect(Contentpos.x, Contentpos.y, Contentsize.x, Contentsize.y), text[openID], labelstyle);
+			temppadding.top -= 5;
+			labelstyle.padding = temppadding;
 			//show name
 			Vector2 Namesize = new Vector2(BGsize.x*0.2f, BGsize.y*0.2f);
 			Vector2 Namepos = new Vector2(BGpos.x+(BGsize.x*0.01f), BGpos.y+(BGsize.y*0.75f));

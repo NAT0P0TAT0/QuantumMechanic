@@ -33,6 +33,14 @@ public class QuantumAbilities : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		//Dev cheats
+		if (Input.GetKeyDown(KeyCode.U)){
+			SuperPosition = true;
+			Entanglement = true;
+			Tunneling = true;
+			WaveParticleDuality = true;
+		}
+		
         playerpos = Player.position;
 		
 		//check if player has left glass area after light mode shouldve been disabled
