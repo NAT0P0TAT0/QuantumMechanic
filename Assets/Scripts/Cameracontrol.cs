@@ -17,6 +17,7 @@ public class Cameracontrol : MonoBehaviour {
 	public float camSpeed = 3.5f;
 	private float targetZoom = 10f;
 	private Vector3 targetPos;
+    private int levelSideBorder = 6;
 
 	// Use this for initialization
 	void Start () {
@@ -55,8 +56,10 @@ public class Cameracontrol : MonoBehaviour {
 			playerfocus = playerfocus*zoomdifference*zoomdifference*zoomdifference;
 			currZoom = ((currZoom - MinZoom)*(zoomdifference*zoomdifference*zoomdifference*zoomdifference)) + MinZoom;
 		}
-		if (currZoom < MinZoom) {
-			currZoom = MinZoom;
+        int tempMinZoom = MinZoom;
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) { tempMinZoom = (int)(MinZoom*2); }//zoomout if player holding Down
+        if (currZoom < tempMinZoom){
+            currZoom = tempMinZoom;
 		}
 		
 		//move cam position and adjust zoom smoothly
@@ -70,6 +73,8 @@ public class Cameracontrol : MonoBehaviour {
 		Vector3 center = Vector3.Lerp(PlayerPos, OtherPos, playerfocus);
 		targetPos = new Vector3(center.x, center.y, -10);
 		this.transform.position = Vector3.Lerp(this.transform.position, targetPos, 0.015f*camSpeed);
+        //make camera doesnt zoom so far out that you can see outside the level
+        if (targetZoom > levelheight) { targetZoom = levelheight; }
 		Camera.main.orthographicSize = targetZoom/2;
 		
 		
@@ -77,18 +82,14 @@ public class Cameracontrol : MonoBehaviour {
 		if (this.transform.position.y < Camera.main.orthographicSize-0.5f) {
 			this.transform.position = new Vector3(this.transform.position.x,Camera.main.orthographicSize-0.5f,this.transform.position.z);
 		}
-		if (this.transform.position.x < Camera.main.orthographicSize+1) {
-			this.transform.position = new Vector3(Camera.main.orthographicSize+1,this.transform.position.y,this.transform.position.z);
+		if (this.transform.position.x < Camera.main.orthographicSize+levelSideBorder) {
+			this.transform.position = new Vector3(Camera.main.orthographicSize+levelSideBorder,this.transform.position.y,this.transform.position.z);
 		}
-		if (this.transform.position.x > Xlimit-Camera.main.orthographicSize-1) {
-			this.transform.position = new Vector3(Xlimit-Camera.main.orthographicSize-1,this.transform.position.y,this.transform.position.z);
+		if (this.transform.position.x > Xlimit-Camera.main.orthographicSize-levelSideBorder) {
+			this.transform.position = new Vector3(Xlimit-Camera.main.orthographicSize-levelSideBorder,this.transform.position.y,this.transform.position.z);
         }
         if (this.transform.position.y > levelheight - Camera.main.orthographicSize - 0.5f) {
             this.transform.position = new Vector3(this.transform.position.x, levelheight - Camera.main.orthographicSize - 0.5f, this.transform.position.z);
         }
-		if(Camera.main.orthographicSize > levelheight/2){
-			Camera.main.orthographicSize = levelheight/2;
-			this.transform.position = new Vector3(this.transform.position.x,Camera.main.orthographicSize,this.transform.position.z);
-		}
 	}
 }

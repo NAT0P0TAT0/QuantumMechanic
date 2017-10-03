@@ -30,25 +30,39 @@ public class playercontroller : MonoBehaviour {
 		}
 		
 		//Detect keypresses
-			if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)){
-			pressingLeft = true;} else {pressingLeft = false;}
-			if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)){
-			pressingRight = true;} else {pressingRight = false;}
-			if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)){
-			pressingJump = true;} else {pressingJump = false;}
-			
+		if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)){
+		    pressingLeft = true;} else {pressingLeft = false;}
+		if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)){
+		    pressingRight = true;} else {pressingRight = false;}
+		if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)){
+		    pressingJump = true;} else {pressingJump = false;}
+    }
+
+    void FixedUpdate() {
 		//manage movement
 		if(Time.timeScale != 0){
-			float tempMax = maxspeed;
+            float tempMax = maxspeed;
             if (pressingLeft){
 				if(onbelt && beltleft){tempMax = maxspeed*2.5f;}
 				if (rb.velocity.x > -tempMax){
-					rb.velocity = new Vector3(rb.velocity.x-acceleration, rb.velocity.y, 0);
-				}
+                    if(onbelt && !beltleft){//stop player from running across conveyor belts the wrong way
+                        if (rb.velocity.x < 0.25f){
+                            rb.velocity = new Vector3(rb.velocity.x+acceleration, rb.velocity.y, 0);
+                        }
+                    } else {
+					    rb.velocity = new Vector3(rb.velocity.x-acceleration, rb.velocity.y, 0);
+                    }
+                }
             } else if (pressingRight){
 				if(onbelt && !beltleft){tempMax = maxspeed*2.5f;}
 				if (rb.velocity.x < tempMax){
-					rb.velocity = new Vector3(rb.velocity.x+acceleration, rb.velocity.y, 0);
+                    if(onbelt && beltleft){//stop player from running across conveyor belts the wrong way
+                        if (rb.velocity.x > -0.25f){
+                            rb.velocity = new Vector3(rb.velocity.x-acceleration, rb.velocity.y, 0);
+                        }
+                    } else {
+					    rb.velocity = new Vector3(rb.velocity.x+acceleration, rb.velocity.y, 0);
+                    }
 				}
 			} else {
 				if (!onground){
@@ -74,21 +88,25 @@ public class playercontroller : MonoBehaviour {
 		//adjust speed if on conveyor belt
 		if(Time.timeScale != 0 && onbelt){
 			Vector3 speed = rb.velocity;
-			float beltAccell = 0.5f;
+            float beltAccell = 0.5f;
 			if(beltleft){
 				if(speed.x > -3){
-					if(!pressingRight){
-						speed.x -= beltAccell;
-					} else if(speed.x > 0.75f) {
-						speed.x -= beltAccell;
+					if(pressingRight){
+                        if(speed.x > 0f) {
+                            speed.x = 0;
+                        }
+					} else {
+                        speed.x -= beltAccell;
 					}
 				}
 			} else {
 				if(speed.x < 3) {
-					if(!pressingLeft){
-						speed.x += beltAccell;
-					} else if(speed.x < -0.75f) {
-						speed.x += beltAccell;
+					if(pressingLeft){
+                        if(speed.x < 0f) {
+                            speed.x = 0;
+                        }
+					} else {
+                        speed.x += beltAccell;
 					}
 				}
 			}

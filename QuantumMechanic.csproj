@@ -89,17 +89,23 @@
     <Compile Include="Assets\Scripts\button.cs" />
     <Compile Include="Assets\Scripts\Cameracontrol.cs" />
     <Compile Include="Assets\Scripts\CloneDespawner.cs" />
+    <Compile Include="Assets\Scripts\conveyorbelt.cs" />
     <Compile Include="Assets\Scripts\end.cs" />
+    <Compile Include="Assets\Scripts\EntangledClone.cs" />
     <Compile Include="Assets\Scripts\exit.cs" />
     <Compile Include="Assets\Scripts\levelcheck.cs" />
     <Compile Include="Assets\Scripts\lever.cs" />
     <Compile Include="Assets\Scripts\LightFormPlayer.cs" />
     <Compile Include="Assets\Scripts\MenuScripts\LoadScene.cs" />
+    <Compile Include="Assets\Scripts\MenuScripts\MENUTEST.cs" />
     <Compile Include="Assets\Scripts\MenuScripts\QuitGame.cs" />
     <Compile Include="Assets\Scripts\parallax.cs" />
     <Compile Include="Assets\Scripts\PlayerAnimation.cs" />
     <Compile Include="Assets\Scripts\playercontroller.cs" />
+    <Compile Include="Assets\Scripts\PopupTrigger.cs" />
     <Compile Include="Assets\Scripts\QuantumAbilities.cs" />
+    <Compile Include="Assets\Scripts\SecurityCamera.cs" />
+    <Compile Include="Assets\Scripts\TextPopups.cs" />
     <Compile Include="Assets\Scripts\ToggleBlock.cs" />
     <Compile Include="Assets\Scripts\Wire.cs" />
   </ItemGroup>

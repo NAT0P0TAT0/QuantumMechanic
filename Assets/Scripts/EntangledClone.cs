@@ -7,6 +7,8 @@ public class EntangledClone : MonoBehaviour {
 	private GameObject Player;
 	public int CloneID = 0;
     public float despawnTime = 9999999999999999999;
+    public float spawnTime = 0;
+    private float maxWidth = 0.65f;
 
 	// Use this for initialization
 	void Start () {
@@ -27,6 +29,12 @@ public class EntangledClone : MonoBehaviour {
 			Vector3 speed = Player.GetComponent<Rigidbody>().velocity;
 			Player.GetComponent<Rigidbody>().velocity = new Vector3(speed.x, speed.y - 0.01f, speed.z);
         }
+        //calculate remaining time (relative to remaining time when first spawned)
+        float maxRemainingTime = despawnTime - spawnTime;
+        float remainingTime = despawnTime - Time.timeSinceLevelLoad;
+        float timePercentage = remainingTime / maxRemainingTime;
+        float indicatorWidth = maxWidth * timePercentage;
+        this.gameObject.transform.GetChild(1).transform.localScale = new Vector3(indicatorWidth, 0.25f, 1);
 	}
 	
 	//detecting if player can jump

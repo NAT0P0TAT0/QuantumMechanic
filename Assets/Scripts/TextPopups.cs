@@ -34,6 +34,9 @@ public class TextPopups : MonoBehaviour {
 	//display popup
 	void OnGUI() {
 		if(popupOpen){
+            //calculate font size
+            labelstyle.fontSize = (int)(Screen.width * 0.016f);
+            if (labelstyle.fontSize < 16) {labelstyle.fontSize = 16;}
 			//show popup bg
 			Vector2 BGsize = new Vector2(Screen.width*0.6f, Screen.width*0.6f*0.335f);
 			Vector2 BGpos = new Vector2(Screen.width*0.2f, 15);

@@ -109,7 +109,7 @@ public class QuantumAbilities : MonoBehaviour {
 				if(InLightForm){
 					CancelLightMode(false);
 				} else {
-					KillAllClones();
+                    KillAllEntangledClones();
 					//turn player into light form
 					Lightform.gameObject.GetComponent<Rigidbody>().velocity = this.GetComponent<Rigidbody>().velocity;
 					Lightform.position = new Vector3(playerpos.x, playerpos.y, 0);
@@ -141,12 +141,14 @@ public class QuantumAbilities : MonoBehaviour {
 	public void SpawnClone(int clonetype, float X, float Y){
 		if(clonetype == 0){//basic copy
 			Transform newClone = Instantiate(Clone, new Vector3(X, Y, 0), transform.rotation);
-			newClone.gameObject.GetComponent<CloneDespawner>().despawnTime = Time.timeSinceLevelLoad + SuperPositionLifeTime;
+            newClone.gameObject.GetComponent<CloneDespawner>().despawnTime = Time.timeSinceLevelLoad + SuperPositionLifeTime;
+            newClone.gameObject.GetComponent<CloneDespawner>().spawnTime = Time.timeSinceLevelLoad;
 			SuperposClones.Add(newClone);
 			newClone.gameObject.GetComponent<CloneDespawner>().CloneID = SuperposClones.Count;
 		} else if(clonetype == 1){//entangled copy
 			Transform newClone = Instantiate(EntangledClone, new Vector3(X, Y, 0), transform.rotation);
-			newClone.gameObject.GetComponent<EntangledClone>().despawnTime = Time.timeSinceLevelLoad + EntanglementLifeTime;
+            newClone.gameObject.GetComponent<EntangledClone>().despawnTime = Time.timeSinceLevelLoad + EntanglementLifeTime;
+            newClone.gameObject.GetComponent<EntangledClone>().spawnTime = Time.timeSinceLevelLoad;
 			EntangledClones.Add(newClone);
 			newClone.gameObject.GetComponent<EntangledClone>().CloneID = EntangledClones.Count;
 		}
@@ -191,6 +193,14 @@ public class QuantumAbilities : MonoBehaviour {
         for (int i = 0; i < SuperposClones.Count; i++){
             KillClone(i);
         }
+        for (int i = 0; i < EntangledClones.Count; i++){
+            KillEntangledClone(i);
+        }
+
+    }
+    //cancel entanglements
+    public void KillAllEntangledClones()
+    {
         for (int i = 0; i < EntangledClones.Count; i++){
             KillEntangledClone(i);
         }
