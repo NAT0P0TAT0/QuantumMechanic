@@ -32,7 +32,7 @@ public class MENUTEST : MonoBehaviour {
 		for (int i = 1; i <= LevelParts.Length; i++){
 			Object[] textures = Resources.LoadAll("Levels/"+LevelParts[i-1], typeof(Texture2D));
 			for (int j = 1; j <= textures.Length; j++){
-				if (savedChapter >= i && savedLevel >= j){
+				if (savedChapter > i || (savedChapter == i && savedLevel >= j)){
 					if (GUI.Button(new Rect(buttonpos.x, buttonpos.y, buttonsize.x, buttonsize.y), i + "-" + j, buttonstyle)){
 						Transform levelloader = Instantiate(LevelContinue, new Vector3(-99, -99, 0), transform.rotation);
 						levelloader.name = "" + j;
