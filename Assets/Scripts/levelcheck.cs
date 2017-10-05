@@ -157,7 +157,7 @@ public class levelcheck : MonoBehaviour {
         //Greys - Static blocks
 		if(red == 3 && green  == 3 && blue  == 3){ //white - standard tile
 			Instantiate(blockprefab, new Vector3(x, y, 0), transform.rotation);
-		} else if(red == 2 && green  == 2 && blue  == 2){ //light grey
+		} else if(red == 2 && green  == 2 && blue  == 2){ //light grey - alt back wall tile
 		} else if(red == 1 && green  == 1 && blue  == 1){ //dark grey - back wall tile
 			Instantiate(backwallprefab, new Vector3(x, y, 0.5f), transform.rotation);
 		}
@@ -254,8 +254,11 @@ public class levelcheck : MonoBehaviour {
 			Instantiate(thinblockhprefab, new Vector3(x, y, 0), transform.rotation);
 		} else if(red == 2 && green == 1 && blue == 2) { //grey magenta - thin wall
 			Instantiate(thinblockvprefab, new Vector3(x, y, 0), transform.rotation);
-		} else if(red == 2 && green == 2 && blue == 0) { //dark magenta
-		} else if(red == 1 && green == 1 && blue == 0) { //darker magenta
+		} else if(red == 2 && green == 0 && blue == 2) { //dark magenta - pressureplate (with backwall)
+			Instantiate(backwallprefab, new Vector3(x, y, 0.5f), transform.rotation);
+			Instantiate(wireprefab, new Vector3(x, y, 0.515f), transform.rotation);
+			Instantiate(buttonprefab, new Vector3(x, y, 0), transform.rotation);
+		} else if(red == 1 && green == 0 && blue == 1) { //darker magenta
 		}
 		
         //Cyans

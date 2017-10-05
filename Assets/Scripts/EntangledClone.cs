@@ -25,9 +25,9 @@ public class EntangledClone : MonoBehaviour {
 		if(Time.timeSinceLevelLoad > despawnTime) {//despawn clones after timeout
             Destroy(this.gameObject);
 			//if the player is in the air and not moving when this despawns sometimes
-			//the player doesnt fall, giving them a little downwards speed fixes that
+			//the player doesnt fall, giving them a little vertical speed fixes that
 			Vector3 speed = Player.GetComponent<Rigidbody>().velocity;
-			Player.GetComponent<Rigidbody>().velocity = new Vector3(speed.x, speed.y - 0.01f, speed.z);
+			Player.GetComponent<Rigidbody>().velocity = new Vector3(speed.x, speed.y + 0.03f, speed.z);
         }
         //calculate remaining time (relative to remaining time when first spawned)
         float maxRemainingTime = despawnTime - spawnTime;

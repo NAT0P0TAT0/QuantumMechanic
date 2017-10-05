@@ -33,6 +33,12 @@ public class Wire : MonoBehaviour {
 					if(fooObj.transform.position.x == this.transform.position.x + 1 && fooObj.transform.position.y == this.transform.position.y){right = true;}
 					if(fooObj.transform.position.x == this.transform.position.x - 1 && fooObj.transform.position.y == this.transform.position.y){left = true;}
 					if(fooObj.transform.position.y == this.transform.position.y - 1 && fooObj.transform.position.x == this.transform.position.x){down = true;}
+				} else if(fooObj.transform.position.x == this.transform.position.x && fooObj.transform.position.y == this.transform.position.y){
+					if(down && !up && !right && !left){
+						Destroy(this.gameObject);
+					} else {
+						down = true;
+					}
 				}
 			}
 		}

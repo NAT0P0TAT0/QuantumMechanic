@@ -59,10 +59,12 @@ public class QuantumAbilities : MonoBehaviour {
                     }
                 }
                 if ((Input.GetKey(KeyCode.Keypad1) || Input.GetKey(KeyCode.Alpha1))){
-                    buttonHold += Time.deltaTime;
-                } else if (buttonHold > 0){
+                    //create superposition clone
+					if(buttonHold == 0 && cloneCount < maxClones){
+						SpawnClone(0, playerpos.x, playerpos.y);
+					}
                     //Entanglement Ability is usable
-                    if (Entanglement && buttonHold > 0.6f){
+                    if (Entanglement && buttonHold > 1.2f){
                         //find all superposition clones spawned so far
                         for (int i = 0; i < SuperposClones.Count; i++){
                             //does it still exist? if so entangle it
@@ -71,11 +73,9 @@ public class QuantumAbilities : MonoBehaviour {
                                 KillClone(i);
                             }
                         }
-                    } else {//create superposition clone
-						if(cloneCount < maxClones){
-							SpawnClone(0, playerpos.x, playerpos.y);
-						}
                     }
+                    buttonHold += Time.deltaTime;
+                } else if (buttonHold > 0){
                     buttonHold = -0.5f;
                 }
 			
