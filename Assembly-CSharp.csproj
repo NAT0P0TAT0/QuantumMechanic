@@ -59,6 +59,7 @@
      <Compile Include="Assets\Parabox Primitives\MonoBehaviours\InteractiveCylinder.cs" />
      <Compile Include="Assets\Parabox Primitives\MonoBehaviours\InteractivePlane.cs" />
      <Compile Include="Assets\Parabox Primitives\MonoBehaviours\InteractivePrism.cs" />
+     <Compile Include="Assets\Scripts\BrokenMachine.cs" />
      <Compile Include="Assets\Scripts\button.cs" />
      <Compile Include="Assets\Scripts\Cameracontrol.cs" />
      <Compile Include="Assets\Scripts\CloneDespawner.cs" />

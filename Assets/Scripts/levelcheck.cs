@@ -83,6 +83,7 @@ public class levelcheck : MonoBehaviour {
     public Transform wireprefab;
     public Transform cameraprefab;
 	public Transform popuptriggerprefab;
+	public Transform brokenmachineprefab;
 	private int popupid = 0;
 	private Color pixelcol;
 	void loadlevel(int levelid){
@@ -105,6 +106,9 @@ public class levelcheck : MonoBehaviour {
 
 		finished = false;
 		ending = false;
+		
+		//reset the exit door checker
+		GameObject.Find("Exit").GetComponent<exit>().reset();
 		
 		//remove existing objects from previous levels
 		popupid = 0;
@@ -139,8 +143,6 @@ public class levelcheck : MonoBehaviour {
 		GameObject.Find("Main Camera").GetComponent<Cameracontrol>().levelheight = levelcodes[levelid].height;
 		GameObject.Find("Main Camera").GetComponent<Cameracontrol>().Xlimit = levelcodes[levelid].width;
 	}
-	public float backgroundscale = 0.25f;
-	public float middlegroundscale = 0.5f;
 	void spawntile(int x, int y, int levelid){
 		//get the pixels colour values
 		pixelcol = levelcodes[levelid].GetPixel(x, y);
@@ -195,9 +197,9 @@ public class levelcheck : MonoBehaviour {
 			GameObject.Find("Player-char").GetComponent<Rigidbody>().velocity = Vector3.zero;
 			GameObject.Find("Player-char").GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
 		} else if(red == 1 && green == 2 && blue == 1) { //grey green - broken machine
-		
+			Instantiate(brokenmachineprefab, new Vector3(x, y, 0), transform.rotation);
 		} else if(red == 0 && green == 2 && blue == 0) { //dark green - level exit
-			GameObject.Find("Exit").transform.position = new Vector3(x,y,0.49f);
+			GameObject.Find("ExitClosed").transform.position = new Vector3(x,y+0.5f,0.49f);
 		} else if(red == 0 && green == 1 && blue == 0) { //darker green
 		}
 		
