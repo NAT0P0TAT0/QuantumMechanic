@@ -9,6 +9,7 @@ public class LightFormPlayer : MonoBehaviour {
     public float despawnTime = 5;
 	private Vector3 currspeed;
 	private GameObject player;
+	private float angle = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -31,12 +32,17 @@ public class LightFormPlayer : MonoBehaviour {
 			currspeed.z = 0;
 			rb.velocity = currspeed.normalized*speed;
 			
-			//render player facing right way
-			if(currspeed.x < 0){
-				this.transform.GetChild(0).transform.localScale = new Vector3(-0.9f, 2, 0.9f);
-			} else {
-				this.transform.GetChild(0).transform.localScale = new Vector3(0.9f, 2, 0.9f);
-			}
+			//turn render to face direction of travel
+			Vector2 dummy = new Vector2(0, 1);
+			Vector2 Direction = new Vector2(currspeed.normalized.x, currspeed.normalized.y);
+			float ang = Vector2.Angle(dummy, Direction);
+			if(currspeed.normalized.x > 0){ang = -ang;}
+			
+			angle += Time.deltaTime*10;
+			//0 is up, 90 is left, 180 is down, 270 is right
+			Debug.Log(angle +" "+ ang);
+			
+			this.transform.GetChild(0).transform.rotation = Quaternion.Euler(0,0,ang);
 			
 			//turn back
 			if (Time.timeSinceLevelLoad > despawnTime){

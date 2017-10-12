@@ -122,6 +122,7 @@ public class QuantumAbilities : MonoBehaviour {
 		//player 'observes' clones to despawn them
 		if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)){
 			KillAllClones();
+			CancelLightMode(false);
 		}
 		
 		//check how many clones there are
@@ -169,22 +170,24 @@ public class QuantumAbilities : MonoBehaviour {
 
     //cancel light mode if player is not in glass, if they are wait until they leave
     public void CancelLightMode(bool levelloading){
-		inGlass = false;
-		if(!levelloading){
-			foreach(GameObject fooObj in GameObject.FindGameObjectsWithTag("ground")){
-				if (fooObj.name.Contains("GlassBlock")){
-					float dist = Vector3.Distance(Lightform.position, fooObj.transform.position);
-					if(dist < 0.75f){
-						inGlass = true;
+		if(InLightForm){
+			inGlass = false;
+			if(!levelloading){
+				foreach(GameObject fooObj in GameObject.FindGameObjectsWithTag("ground")){
+					if (fooObj.name.Contains("GlassBlock")){
+						float dist = Vector3.Distance(Lightform.position, fooObj.transform.position);
+						if(dist < 0.75f){
+							inGlass = true;
+						}
 					}
 				}
 			}
-		}
-		if(!inGlass){
-			this.transform.position = Lightform.position;
-			this.GetComponent<Rigidbody>().velocity = Lightform.gameObject.GetComponent<Rigidbody>().velocity;
-			Lightform.position = new Vector3(2, 999, 0);
-			InLightForm = false;
+			if(!inGlass){
+				this.transform.position = Lightform.position;
+				this.GetComponent<Rigidbody>().velocity = Lightform.gameObject.GetComponent<Rigidbody>().velocity;
+				Lightform.position = new Vector3(2, 999, 0);
+				InLightForm = false;
+			}
 		}
     }
 

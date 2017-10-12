@@ -74,6 +74,7 @@ public class levelcheck : MonoBehaviour {
 	public Transform thinblockvprefab;
 	public Transform thinblockhprefab;
 	public Transform glassblockprefab;
+	public Transform blackblockprefab;
 	public Transform angledtileprefab;
 	public Transform conveyorbeltprefab;
 	public Transform toggleblockprefab;
@@ -179,6 +180,7 @@ public class levelcheck : MonoBehaviour {
 		} else if(red == 2 && green == 0 && blue == 0) { //dark red - angled surface (top right)
 			Instantiate(angledtileprefab, new Vector3(x, y, 0), Quaternion.Euler(180,180,0));
 		} else if(red == 1 && green == 0 && blue == 0) { //darker red - black surface that cancels lightform
+			Instantiate(blackblockprefab, new Vector3(x, y, 0), transform.rotation);
 		}
 		
 		//Greens - Player stuff (spawn, checkpoints, text popup triggers, etc)
