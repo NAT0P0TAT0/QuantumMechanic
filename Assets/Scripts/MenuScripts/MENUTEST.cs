@@ -42,8 +42,10 @@ public class MENUTEST : MonoBehaviour {
 				} else {
 					GUI.Label(new Rect(buttonpos.x, buttonpos.y, buttonsize.x, buttonsize.y), i + "-" + j, labelstyle);
 				}
-				buttonpos.y += buttonsize.y + 20;
+				buttonpos.x += buttonsize.x + 20;
 			}
+			buttonpos.y += buttonsize.y + 20;
+			buttonpos.x = (Screen.width-70) - (buttonsize.x+20);
 		}
 	}
 }

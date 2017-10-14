@@ -115,10 +115,7 @@ public class levelcheck : MonoBehaviour {
 		popupid = 0;
 		foreach(GameObject fooObj in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()){
             //move wires to fix bug where they connect to places other wires were in the previous level
-            if (fooObj.name.Contains("Wire")){
-                fooObj.transform.position = new Vector3(-999, -999, -999);
-            }
-            if (fooObj.name.Contains("Toggle")){
+            if (fooObj.name.Contains("Wire") || fooObj.name.Contains("Toggle") || fooObj.name.Contains("Lever") || fooObj.name.Contains("Button")){
                 fooObj.transform.position = new Vector3(-999, -999, -999);
             }
             //delete all the cloned prefabs - except for the angled blocks since their render model breaks if any of them is deleted for some stupid reason -_-

@@ -16,6 +16,7 @@ public class Wire : MonoBehaviour {
 	private Renderer rightRender;
 	private Renderer downRender;
 	private Renderer leftRender;
+	public bool wallbutton = false;
 
 	// Use this for initialization
 	void Start () {
@@ -30,15 +31,13 @@ public class Wire : MonoBehaviour {
 			if (fooObj.name.Contains("Button")){
 				if(fooObj.transform.position.y == this.transform.position.y + 1 && fooObj.transform.position.x == this.transform.position.x){up = true;}
 				if(fooObj.GetComponent<button>().Toggle){
+					if(fooObj.transform.position.x == this.transform.position.x && fooObj.transform.position.y == this.transform.position.y){
+						wallbutton = true;
+					}
 					if(fooObj.transform.position.x == this.transform.position.x + 1 && fooObj.transform.position.y == this.transform.position.y){right = true;}
 					if(fooObj.transform.position.x == this.transform.position.x - 1 && fooObj.transform.position.y == this.transform.position.y){left = true;}
-					if(fooObj.transform.position.y == this.transform.position.y - 1 && fooObj.transform.position.x == this.transform.position.x){down = true;}
 				} else if(fooObj.transform.position.x == this.transform.position.x && fooObj.transform.position.y == this.transform.position.y){
-					if(down && !up && !right && !left){
-						Destroy(this.gameObject);
-					} else {
-						down = true;
-					}
+					down = true;
 				}
 			}
 		}
@@ -60,6 +59,18 @@ public class Wire : MonoBehaviour {
 		if(!right){this.gameObject.transform.GetChild(2).GetComponent<Renderer>().enabled = false;}
 		if(!down){this.gameObject.transform.GetChild(3).GetComponent<Renderer>().enabled = false;}
 		if(!left){this.gameObject.transform.GetChild(4).GetComponent<Renderer>().enabled = false;}
+		
+		//check if the wire is not connected to anything
+		if(!wallbutton){
+			int nodes = 0;
+			if(down){nodes++;}
+			if(up){nodes++;}
+			if(left){nodes++;}
+			if(right){nodes++;}
+			if(nodes == 1){
+				Destroy(this.gameObject);
+			}
+		}
 		
 		updateRender();
 	}
