@@ -46,6 +46,7 @@ public class exit : MonoBehaviour {
 		machineCount = 0;
 		active = false;
 		machines = false;
+		this.transform.position = new Vector3(-999, -999, 0);
 	}
 	
 	void OnTriggerEnter(Collider other) {
