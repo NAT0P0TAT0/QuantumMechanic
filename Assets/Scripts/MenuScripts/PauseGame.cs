@@ -19,6 +19,7 @@ public class PauseGame : MonoBehaviour {
     //Restart
     public void Restart()
     {
+        Time.timeScale = 1;
         GameObject.Find("LevelLoader").GetComponent<levelcheck>().RestartLevel();
     }
 
