@@ -25,8 +25,13 @@ public class PauseGame : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Time.timeScale = 0;
-            PausePanel.SetActive(true);
+			if(Time.timeScale != 0){
+				Time.timeScale = 0;
+				PausePanel.SetActive(true);
+			} else {
+				Time.timeScale = 1;
+				PausePanel.SetActive(false);
+			}
         }
     }
 }

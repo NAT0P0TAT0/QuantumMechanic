@@ -52,69 +52,75 @@ public class QuantumAbilities : MonoBehaviour {
 		if(!InLightForm){
 			//SuperPosition Ability is usable
 			if(SuperPosition){
-                if (buttonHold < 0){
-                    buttonHold += Time.deltaTime;
-                    if (buttonHold > 0){
-                        buttonHold = 0;
-                    }
-                }
-                if ((Input.GetKey(KeyCode.Keypad1) || Input.GetKey(KeyCode.Alpha1))){
-                    //create superposition clone
-					if(buttonHold == 0 && cloneCount < maxClones){
-						SpawnClone(0, playerpos.x, playerpos.y);
+				if(Time.timeScale != 0){
+					if (buttonHold < 0){
+						buttonHold += Time.deltaTime;
+						if (buttonHold > 0){
+							buttonHold = 0;
+						}
 					}
-                    //Entanglement Ability is usable
-                    if (Entanglement && buttonHold > 1.2f){
-                        //find all superposition clones spawned so far
-                        for (int i = 0; i < SuperposClones.Count; i++){
-                            //does it still exist? if so entangle it
-                            if (SuperposClones[i] != null){
-                                SpawnClone(1, SuperposClones[i].position.x, SuperposClones[i].position.y);
-                                KillClone(i);
-                            }
-                        }
-                    }
-                    buttonHold += Time.deltaTime;
-                } else if (buttonHold > 0){
-                    buttonHold = -0.5f;
-                }
+					if ((Input.GetKey(KeyCode.Keypad1) || Input.GetKey(KeyCode.Alpha1))){
+						//create superposition clone
+						if(buttonHold == 0 && cloneCount < maxClones){
+							SpawnClone(0, playerpos.x, playerpos.y);
+						}
+						//Entanglement Ability is usable
+						if (Entanglement && buttonHold > 1.2f){
+							//find all superposition clones spawned so far
+							for (int i = 0; i < SuperposClones.Count; i++){
+								//does it still exist? if so entangle it
+								if (SuperposClones[i] != null){
+									SpawnClone(1, SuperposClones[i].position.x, SuperposClones[i].position.y);
+									KillClone(i);
+								}
+							}
+						}
+						buttonHold += Time.deltaTime;
+					} else if (buttonHold > 0){
+						buttonHold = -0.5f;
+					}
+				}
 			
 			}
 			
 			//Tunnelling Ability is usable
 			if(Tunneling){
-                if (Input.GetKey(KeyCode.Keypad2) || Input.GetKey(KeyCode.Alpha2)){
-					if(!usingTunnel){
-						this.gameObject.layer = LayerMask.NameToLayer("Tunneling");
-						Renderer rend = this.transform.GetChild(0).GetComponent<Renderer>();
-						rend.material.shader = Shader.Find("Standard");
-						rend.material.color = new Color(0.2f, 1, 0.1f, 1);
+				if(Time.timeScale != 0){
+					if (Input.GetKey(KeyCode.Keypad2) || Input.GetKey(KeyCode.Alpha2)){
+						if(!usingTunnel){
+							this.gameObject.layer = LayerMask.NameToLayer("Tunneling");
+							Renderer rend = this.transform.GetChild(0).GetComponent<Renderer>();
+							rend.material.shader = Shader.Find("Standard");
+							rend.material.color = new Color(0.2f, 1, 0.1f, 1);
+						}
+						usingTunnel = true;
+					} else {
+						if(usingTunnel){
+							this.gameObject.layer = LayerMask.NameToLayer("Player");
+							Renderer rend = this.transform.GetChild(0).GetComponent<Renderer>();
+							rend.material.shader = Shader.Find("Unlit/Transparent Cutout");
+						}
+						usingTunnel = false;
 					}
-					usingTunnel = true;
-                } else {
-					if(usingTunnel){
-						this.gameObject.layer = LayerMask.NameToLayer("Player");
-						Renderer rend = this.transform.GetChild(0).GetComponent<Renderer>();
-						rend.material.shader = Shader.Find("Unlit/Transparent Cutout");
-					}
-					usingTunnel = false;
 				}
 			}
 		}
 		
 		//Wave/Particle Duality Ability is usable
 		if(WaveParticleDuality){
-            if ((Input.GetKey(KeyCode.Keypad3) || Input.GetKey(KeyCode.Alpha3)) && Time.timeSinceLevelLoad > WavedualityTimeout){
-				WavedualityTimeout = Time.timeSinceLevelLoad + 0.25f;
-				if(InLightForm){
-					CancelLightMode(false);
-				} else {
-                    KillAllEntangledClones();
-					//turn player into light form
-					Lightform.gameObject.GetComponent<Rigidbody>().velocity = this.GetComponent<Rigidbody>().velocity;
-					Lightform.position = new Vector3(playerpos.x, playerpos.y, 0);
-					InLightForm = true;
-					this.transform.position = new Vector3(2,999,0);
+			if(Time.timeScale != 0){
+				if ((Input.GetKey(KeyCode.Keypad3) || Input.GetKey(KeyCode.Alpha3)) && Time.timeSinceLevelLoad > WavedualityTimeout){
+					WavedualityTimeout = Time.timeSinceLevelLoad + 0.25f;
+					if(InLightForm){
+						CancelLightMode(false);
+					} else {
+						KillAllEntangledClones();
+						//turn player into light form
+						Lightform.gameObject.GetComponent<Rigidbody>().velocity = this.GetComponent<Rigidbody>().velocity;
+						Lightform.position = new Vector3(playerpos.x, playerpos.y, 0);
+						InLightForm = true;
+						this.transform.position = new Vector3(2,999,0);
+					}
 				}
 			}
 		}
