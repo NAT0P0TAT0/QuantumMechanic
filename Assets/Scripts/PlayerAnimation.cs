@@ -21,48 +21,50 @@ public class PlayerAnimation : MonoBehaviour {
 	
 	// Update is called once per frame
     void Update(){
-		//flip renderer when player facing left
-		if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)){
-			this.gameObject.transform.GetChild(0).transform.localScale = new Vector3(-1, 2.2f, 1);
-		} else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)){
-			this.gameObject.transform.GetChild(0).transform.localScale = new Vector3(1, 2.2f, 1);
-        }
-		//check if player is jumping or falling
-		if (!GameObject.Find("Player-char").GetComponent<playercontroller>().onground){
-			float vertSpeed = this.GetComponent<Rigidbody>().velocity.y;
-			if (vertSpeed > 0){
-				PlayAnimation(jumpSprites);
-				if(state != 3){
+		if(Time.timeScale != 0){
+			//flip renderer when player facing left
+			if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)){
+				this.gameObject.transform.GetChild(0).transform.localScale = new Vector3(-1, 2.2f, 1);
+			} else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)){
+				this.gameObject.transform.GetChild(0).transform.localScale = new Vector3(1, 2.2f, 1);
+			}
+			//check if player is jumping or falling
+			if (!GameObject.Find("Player-char").GetComponent<playercontroller>().onground){
+				float vertSpeed = this.GetComponent<Rigidbody>().velocity.y;
+				if (vertSpeed > 0){
+					PlayAnimation(jumpSprites);
+					if(state != 3){
+						currFrame = 0;
+						spriteID = 0;
+					}
+					state = 3;
+				} else if (vertSpeed < -0){
+					PlayAnimation(fallSprites);
+					if(state != 2){
+						currFrame = 0;
+						spriteID = 0;
+					}
+					state = 2;
+				}
+			//check if player is running
+			} else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)){
+				PlayAnimation(walkSprites);
+				if(state != 1){
 					currFrame = 0;
 					spriteID = 0;
 				}
-				state = 3;
-			} else if (vertSpeed < -0){
-				PlayAnimation(fallSprites);
-				if(state != 2){
+				state = 1;
+			} else {
+			//check if player is standing still
+				PlayAnimation(idleSprites);
+				if(state != 0){
 					currFrame = 0;
 					spriteID = 0;
 				}
-				state = 2;
+				state = 0;
 			}
-		//check if player is running
-        } else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)){
-            PlayAnimation(walkSprites);
-			if(state != 1){
-				currFrame = 0;
-				spriteID = 0;
-			}
-			state = 1;
-        } else {
-		//check if player is standing still
-            PlayAnimation(idleSprites);
-			if(state != 0){
-				currFrame = 0;
-				spriteID = 0;
-			}
-			state = 0;
-        }
-        currFrame += Time.deltaTime;
+			currFrame += Time.deltaTime;
+		}
 	}
 
 	//play sprite loop

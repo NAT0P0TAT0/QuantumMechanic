@@ -23,12 +23,10 @@ public class PauseGame : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.M))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             Time.timeScale = 0;
             PausePanel.SetActive(true);
-
-
         }
     }
 }
