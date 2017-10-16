@@ -20,6 +20,7 @@ public class PauseGame : MonoBehaviour {
     public void Restart()
     {
         GameObject.Find("LevelLoader").GetComponent<levelcheck>().RestartLevel();
+        Time.timeScale = 1;
     }
 
 	// Use this for initialization
