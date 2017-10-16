@@ -10,4 +10,18 @@ public class LoadScene : MonoBehaviour
     {
         SceneManager.LoadScene(SceneNumber);
     }
+	
+    public void LoadLatestLevel()
+    {
+		int savedChapter = PlayerPrefs.GetInt("PlayersChapter");
+		int savedLevel = PlayerPrefs.GetInt("PlayersLevel");
+		if(savedChapter == 0 || savedLevel == 0){
+			SceneManager.LoadScene(1);
+		} else {
+		Transform levelloader = GameObject.Find("LevelContinue").transform;
+		levelloader.name = "" + savedLevel;
+		DontDestroyOnLoad(levelloader);
+		SceneManager.LoadScene("Part" + savedChapter);
+		}
+    }
 }
