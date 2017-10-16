@@ -73,7 +73,9 @@
      <Compile Include="Assets\Scripts\LightFormPlayer.cs" />
      <Compile Include="Assets\Scripts\MenuScripts\LoadScene.cs" />
      <Compile Include="Assets\Scripts\MenuScripts\MENUTEST.cs" />
+     <Compile Include="Assets\Scripts\MenuScripts\PauseGame.cs" />
      <Compile Include="Assets\Scripts\MenuScripts\QuitGame.cs" />
+     <Compile Include="Assets\Scripts\MenuScripts\ToggleUpdate.cs" />
      <Compile Include="Assets\Scripts\parallax.cs" />
      <Compile Include="Assets\Scripts\PlayerAnimation.cs" />
      <Compile Include="Assets\Scripts\playercontroller.cs" />

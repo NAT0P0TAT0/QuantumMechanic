@@ -25,12 +25,12 @@ public class ToggleBlock : MonoBehaviour {
 	
 	public void swapState(){
 		this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y,1+this.transform.position.z);
-		GameObject fooChild = this.transform.Find("Block-Model").gameObject;
+		Renderer render = this.gameObject.transform.GetChild(0).GetComponent<Renderer>();
 		if(this.transform.position.z == 2){
 			this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y,0);
-			fooChild.GetComponent<Renderer>().enabled = true;
+			render.enabled = true;
 		} else {
-			fooChild.GetComponent<Renderer>().enabled = false;
+			render.enabled = false;
 		}
 		active = !active;
 		//update connected parts

@@ -78,6 +78,7 @@ public class levelcheck : MonoBehaviour {
 	public Transform angledtileprefab;
 	public Transform conveyorbeltprefab;
 	public Transform toggleblockprefab;
+	public Transform togglebackprefab;
 	public Transform leverprefab;
 	public Transform buttonprefab;
 	public Transform buttonwallprefab;
@@ -207,11 +208,13 @@ public class levelcheck : MonoBehaviour {
 			Instantiate(leverprefab, new Vector3(x, y, 0), Quaternion.Euler(0,-180,0));
 		} else if(red == 1 && green == 1 && blue == 3) { //light blue - lever (facing left)
 			Instantiate(leverprefab, new Vector3(x, y, 0), transform.rotation);
-		} else if(red == 0 && green == 0 && blue == 3) { //blue - toggleable block (will replace with something else)
+		} else if(red == 0 && green == 0 && blue == 3) { //blue - toggleable block (on)
+			Instantiate(togglebackprefab, new Vector3(x, y, 0.5f), transform.rotation);
 			Transform fooObj = Instantiate(toggleblockprefab, new Vector3(x, y, 0), transform.rotation);
 			GameObject fooChild = fooObj.Find("Block-Model").gameObject;
 			fooChild.GetComponent<Renderer>().enabled = true;
-		} else if(red == 1 && green == 1 && blue == 2) { //grey blue - toggleable block "off"
+		} else if(red == 1 && green == 1 && blue == 2) { //grey blue - toggleable block (off)
+			Instantiate(togglebackprefab, new Vector3(x, y, 0.5f), transform.rotation);
 			Transform fooObj = Instantiate(toggleblockprefab, new Vector3(x, y, 1), transform.rotation);
 			GameObject fooChild = fooObj.Find("Block-Model").gameObject;
 			fooChild.GetComponent<Renderer>().enabled = false;
