@@ -11,9 +11,15 @@ public class PauseGame : MonoBehaviour {
 
     //Methods
     //Restart
-    public void Restart()
+    public void Resume()
     {
         Time.timeScale = 1;
+		PausePanel.SetActive(false);
+    }
+    //Restart
+    public void Restart()
+    {
+        GameObject.Find("LevelLoader").GetComponent<levelcheck>().RestartLevel();
     }
 
 	// Use this for initialization
