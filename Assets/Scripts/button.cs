@@ -19,10 +19,10 @@ public class button : MonoBehaviour {
 	void Update () {
 		Vector3 scale = this.gameObject.transform.GetChild(0).transform.localScale;
 		if(activated){
-			scale.x = 0.05f;
+			scale.x = 0.1f;
 			this.gameObject.transform.GetChild(0).transform.localScale = scale;
 		} else {
-			scale.x = 0.15f;
+			scale.x = 0.3f;
 			this.gameObject.transform.GetChild(0).transform.localScale = scale;
 		}
 		if(activated != pressed){
