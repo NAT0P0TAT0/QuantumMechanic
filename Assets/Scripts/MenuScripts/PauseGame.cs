@@ -21,7 +21,6 @@ public class PauseGame : MonoBehaviour {
     {
         Time.timeScale = 1;
         GameObject.Find("LevelLoader").GetComponent<levelcheck>().RestartLevel();
-        Time.timeScale = 1;
     }
 
     public void UpdateVolume()
