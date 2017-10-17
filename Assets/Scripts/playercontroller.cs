@@ -81,6 +81,7 @@ public class playercontroller : MonoBehaviour {
 				if(onground){
 					rb.velocity = new Vector3(rb.velocity.x, jumpheight, 0);
 					onground = false;
+                    GameObject.Find("AudioController").GetComponent<AudioController>().PlaySound(0);
 				}
 			}
 		}

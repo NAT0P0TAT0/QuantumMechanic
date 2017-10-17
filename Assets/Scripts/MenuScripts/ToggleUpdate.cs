@@ -17,7 +17,5 @@ public class ToggleUpdate : MonoBehaviour {
 	// Update is called once per frame
 	public void Update () {
         Screen.fullScreen = Toggle.isOn;
-        Debug.Log(Screen.fullScreen);
-
     }
 }

@@ -24,6 +24,14 @@ public class PauseGame : MonoBehaviour {
         Time.timeScale = 1;
     }
 
+    public void UpdateVolume()
+    {
+        float volume = GameObject.Find("SFXSlider").GetComponent<Slider>().value;
+        PlayerPrefs.SetFloat("SFXvolume", volume);
+        volume = GameObject.Find("MusicSlider").GetComponent<Slider>().value;
+        PlayerPrefs.SetFloat("MUSICvolume", volume);
+    }
+
 	// Use this for initialization
 	void Start () {
 	}
@@ -38,7 +46,8 @@ public class PauseGame : MonoBehaviour {
 				PausePanel.SetActive(true);
 			} else {
 				Time.timeScale = 1;
-				PausePanel.SetActive(false);
+                PausePanel.SetActive(false);
+                GameObject.Find("OptionsPanel").SetActive(false);
 			}
         }
     }

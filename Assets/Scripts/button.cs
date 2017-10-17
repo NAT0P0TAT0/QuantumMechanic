@@ -38,7 +38,14 @@ public class button : MonoBehaviour {
 			
 			if(Toggle){
 				this.gameObject.transform.GetChild(0).GetComponent<Renderer>().material = usedButton;
-			}
+                GameObject.Find("AudioController").GetComponent<AudioController>().PlaySound(2);
+			} else {
+                if(activated){
+                    GameObject.Find("AudioController").GetComponent<AudioController>().PlaySound(3);
+                } else {
+                    GameObject.Find("AudioController").GetComponent<AudioController>().PlaySound(4);
+                }
+            }
 		}
 		activated = pressed;
         if (!Toggle && pressed && !objectTouching){
