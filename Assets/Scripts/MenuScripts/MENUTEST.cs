@@ -10,6 +10,7 @@ public class MENUTEST : MonoBehaviour {
 	public GUIStyle buttonstyle;
 	public GUIStyle labelstyle;
 	public Transform LevelContinue;
+	public Transform musicprefab;
 	//Menu Canvas
 	public Canvas MainMenu;
 	int savedChapter = 1;
@@ -46,6 +47,9 @@ public class MENUTEST : MonoBehaviour {
 						Transform levelloader = Instantiate(LevelContinue, new Vector3(-99, -99, 0), transform.rotation);
 						levelloader.name = "" + j;
 						DontDestroyOnLoad(levelloader);
+						Transform musicplayer = Instantiate(musicprefab, new Vector3(0, 0, 0), transform.rotation);
+						musicplayer.name = "MusicPlayer2";
+						DontDestroyOnLoad(musicplayer);
 						SceneManager.LoadScene("Part" + i);
 					}
 				} else {

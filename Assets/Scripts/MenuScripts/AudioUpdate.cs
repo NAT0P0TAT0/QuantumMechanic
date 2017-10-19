@@ -4,8 +4,8 @@ using UnityEngine.UI;
 using UnityEngine;
 
 public class AudioUpdate : MonoBehaviour {
-	
-    public void UpdateVolume()
+
+	public void UpdateVolume()
     {
         float volume = GameObject.Find("SFXSlider").GetComponent<Slider>().value;
         PlayerPrefs.SetFloat("SFXvolume", volume);

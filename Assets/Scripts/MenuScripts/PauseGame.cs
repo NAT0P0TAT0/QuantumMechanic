@@ -31,18 +31,23 @@ public class PauseGame : MonoBehaviour {
         PlayerPrefs.SetFloat("MUSICvolume", volume);
     }
 
-	// Use this for initialization
-	void Start () {
-	}
-
-    // Update is called once per frame
+	// Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
+        if (Input.GetKeyDown(KeyCode.Escape)){
 			if(Time.timeScale != 0){
 				Time.timeScale = 0;
 				PausePanel.SetActive(true);
+				foreach(GameObject obj in Resources.FindObjectsOfTypeAll(typeof(GameObject))){
+					if (obj.name.Contains("MusicSlider")){
+						obj.SetActive(true);
+						obj.GetComponent<Slider>().value = PlayerPrefs.GetFloat("MUSICvolume");
+					}
+					if (obj.name.Contains("SFXSlider")){
+						obj.SetActive(true);
+						obj.GetComponent<Slider>().value = PlayerPrefs.GetFloat("SFXvolume");
+					}
+				}
 			} else {
 				Time.timeScale = 1;
                 PausePanel.SetActive(false);
