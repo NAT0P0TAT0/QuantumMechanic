@@ -34,12 +34,13 @@ public class TextPopups : MonoBehaviour {
 	//display popup
 	void OnGUI() {
 		if(popupOpen){
+			GUI.depth = -9999;
             //calculate font size
             labelstyle.fontSize = (int)(Screen.width * 0.016f);
             if (labelstyle.fontSize < 16) {labelstyle.fontSize = 16;}
 			//show popup bg
 			Vector2 BGsize = new Vector2(Screen.width*0.6f, Screen.width*0.6f*0.335f);
-			Vector2 BGpos = new Vector2(Screen.width*0.2f, 15);
+			Vector2 BGpos = new Vector2(Screen.width*0.132f, 20);
 			GUI.Label(new Rect(BGpos.x, BGpos.y, BGsize.x, BGsize.y), "", bgstyle);
 			//show text
 			Vector2 Contentsize = new Vector2(BGsize.x*0.7f, BGsize.y*0.86f);
@@ -52,6 +53,7 @@ public class TextPopups : MonoBehaviour {
 			temppadding.top -= 5;
 			temppadding.right -= 7;
 			labelstyle.padding = temppadding;
+			/*
 			//show name
 			Vector2 Namesize = new Vector2(BGsize.x*0.2f, BGsize.y*0.2f);
 			Vector2 Namepos = new Vector2(BGpos.x+(BGsize.x*0.01f), BGpos.y+(BGsize.y*0.75f));
@@ -70,6 +72,7 @@ public class TextPopups : MonoBehaviour {
 			} else {
 				GUI.Label(new Rect(Picpos.x, Picpos.y, Picsize.x, Picsize.y), DefaultPic, labelstyle);
 			}
+			*/
 			
 			//hide popup
 			if (Input.GetKeyDown(KeyCode.E)){

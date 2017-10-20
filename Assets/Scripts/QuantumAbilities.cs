@@ -215,4 +215,40 @@ public class QuantumAbilities : MonoBehaviour {
         }
 
     }
+	
+	
+	public GUIStyle SuperposStyle;
+	public GUIStyle EntangleStyle;
+	public GUIStyle TunnelStyle;
+	public GUIStyle WaveStyle;
+	public GUIStyle SuperposGreyStyle;
+	public GUIStyle TunnelGreyStyle;
+	public GUIStyle WaveGreyStyle;
+	Vector2 labelsize = new Vector2(0, 0);
+	Vector2 labelpos = new Vector2(0, 0);
+	//display available abilities to player
+	void OnGUI() {
+		labelsize.x = Screen.width*0.14f;
+		labelsize.y = labelsize.x*0.85f;
+		labelpos.x = labelsize.x;
+		if(Entanglement){
+			GUI.Label(new Rect(labelpos.x, labelpos.y, labelsize.x, labelsize.y), " ", EntangleStyle);
+		} else if (SuperPosition){
+			GUI.Label(new Rect(labelpos.x, labelpos.y, labelsize.x, labelsize.y), " ", SuperposStyle);
+		} else {
+			GUI.Label(new Rect(labelpos.x, labelpos.y, labelsize.x, labelsize.y), " ", SuperposGreyStyle);
+		}
+		labelpos.x += labelsize.x*2;
+		if(Tunneling){
+			GUI.Label(new Rect(labelpos.x, labelpos.y, labelsize.x, labelsize.y), " ", TunnelStyle);
+		} else {
+			GUI.Label(new Rect(labelpos.x, labelpos.y, labelsize.x, labelsize.y), " ", TunnelGreyStyle);
+		}
+		labelpos.x += labelsize.x*2;
+		if(WaveParticleDuality){
+			GUI.Label(new Rect(labelpos.x, labelpos.y, labelsize.x, labelsize.y), " ", WaveStyle);
+		} else {
+			GUI.Label(new Rect(labelpos.x, labelpos.y, labelsize.x, labelsize.y), " ", WaveGreyStyle);
+		}
+	}
 }
