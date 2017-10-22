@@ -57,7 +57,15 @@ public class Cameracontrol : MonoBehaviour {
 			currZoom = ((currZoom - MinZoom)*(zoomdifference*zoomdifference*zoomdifference*zoomdifference)) + MinZoom;
 		}
         int tempMinZoom = MinZoom;
-        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) { tempMinZoom = (int)(MinZoom*2); }//zoomout if player holding Down
+		//zoomout if player holding Down
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) {
+			if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.RightArrow)) {
+				float vertSpeed = targets[0].GetComponent<Rigidbody>().velocity.y;
+				if (vertSpeed < 0.2f && vertSpeed > -0.2f){
+					tempMinZoom = (int)(MinZoom*2);
+				}
+			}
+		}
         if (currZoom < tempMinZoom){
             currZoom = tempMinZoom;
 		}

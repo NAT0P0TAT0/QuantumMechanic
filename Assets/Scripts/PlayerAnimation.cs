@@ -9,6 +9,7 @@ public class PlayerAnimation : MonoBehaviour {
     public Texture2D[] jumpSprites;
     public Texture2D[] fallSprites;
     public Texture2D[] idleSprites;
+    public Texture2D[] goggleSprites;
     private Renderer playerRender;
     private int spriteID = 0;
     private float currFrame = 0;
@@ -54,6 +55,14 @@ public class PlayerAnimation : MonoBehaviour {
 					spriteID = 0;
 				}
 				state = 1;
+			//check if player is holding down
+			} else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)){
+				PlayAnimation(goggleSprites);
+				if(state != 4){
+					currFrame = 0;
+					spriteID = 0;
+				}
+				state = 4;
 			} else {
 			//check if player is standing still
 				PlayAnimation(idleSprites);
