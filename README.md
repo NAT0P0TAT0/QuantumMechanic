@@ -1,9 +1,15 @@
 # QuantumMechanic
 IGB200 project
 
-Make sure you're using Unity 2017
+From Team 9
 
-Recommend using github for windows program so you can have a local copy thats easy to sync
+Michael Ashwin
+Nathan Brown
+Daniel Chassain
+Aurthur Lai
 
-Levels can be accessed from the Resources Folder, the avilable colours are in the 'level key' image in the Assets folder<br />
-(When adding new levels keep in mind they must be png and you have to enable read/write on them in unity)
+
+To play the game simply move or copy/paste both the .exe file and the _data folder to the same place and run the .exe file.
+
+
+The game contains 3D models from the free unity asset pack "Parabox Primitives"
