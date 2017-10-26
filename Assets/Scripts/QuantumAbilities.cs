@@ -33,13 +33,13 @@ public class QuantumAbilities : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//Dev cheats
+		/*//Dev cheats
 		if (Input.GetKeyDown(KeyCode.U)){
 			SuperPosition = true;
 			Entanglement = true;
 			Tunneling = true;
 			WaveParticleDuality = true;
-		}
+		}*/
 		
         playerpos = Player.position;
 		

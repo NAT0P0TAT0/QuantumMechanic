@@ -45,12 +45,9 @@ public class levelcheck : MonoBehaviour {
 	
 	void Update() {
 		if (Input.GetKeyDown(KeyCode.R)){
-			RestartLevel();
+			//RestartLevel();
         }
-        if (Input.GetKeyDown(KeyCode.Q)){
-            SceneManager.LoadScene("MainMenu");
-        }
-		if((finished && ending == false) || Input.GetKeyDown(KeyCode.P)){
+		if((finished && ending == false)){
 			levelnum++;
 			ending = true;
 			StartCoroutine(Levelfinished());
