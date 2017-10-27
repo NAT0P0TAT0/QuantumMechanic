@@ -5,12 +5,34 @@ using UnityEngine;
 public class conveyorbelt : MonoBehaviour {
 
 	public bool left = false;
+    public Texture2D[] sprites;
+	
+    private int frameRate = 60;
+    private float currFrame = 0;
+    private int spriteID = 0;
+    private Renderer render;
 	
 	void Start(){
 		if(left){
 			Vector3 newscale = new Vector3(-this.transform.localScale.x, this.transform.localScale.y, this.transform.localScale.z);
 			this.transform.localScale = newscale;
 		}
+		render = this.GetComponent<Renderer>();
+	}
+	
+	void Update(){
+		if (sprites.Length > 1){
+			float FPS = (float)1 / (float)frameRate;
+			if (currFrame >= FPS){
+				spriteID++;
+				currFrame = 0;
+			}
+			if (spriteID >= sprites.Length){
+				spriteID = 0;
+			}
+			render.material.mainTexture = sprites[spriteID];
+		}
+		currFrame += Time.deltaTime;
 	}
 	
 	void OnTriggerStay(Collider other) {
