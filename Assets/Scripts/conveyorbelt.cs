@@ -7,7 +7,7 @@ public class conveyorbelt : MonoBehaviour {
 	public bool left = false;
     public Texture2D[] sprites;
 	
-    private int frameRate = 60;
+    private int frameRate = 45;
     private float currFrame = 0;
     private int spriteID = 0;
     private Renderer render;
