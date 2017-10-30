@@ -12,16 +12,26 @@ public class BrokenMachine : MonoBehaviour {
 	private bool showrepairing = false;
 	private float rotation = 0;
 	private bool clockwise = true;
+	
+    public Texture2D[] brokenSprites;
+    public Texture2D[] fixedSprites;
+	private Texture2D[] sprites;
+	private int frameRate = 2;
+    private float currFrame = 0;
+    private int spriteID = 0;
+    private Renderer render;
 
 	// Use this for initialization
 	void Start () {
 		GameObject.Find("Exit").GetComponent<exit>().machineCount++;
 		pointer = Instantiate(pointerPrefab, new Vector3(0, 0, 0), transform.rotation);
+		render = this.gameObject.transform.GetChild(0).GetComponent<Renderer>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if(repairTime > 0){
+			sprites = brokenSprites;
 			//show pointer
 			playerPos = GameObject.Find("Player-char").transform.position;
 			float dist = Vector3.Distance(playerPos, this.transform.position);
@@ -52,6 +62,7 @@ public class BrokenMachine : MonoBehaviour {
 				this.gameObject.transform.GetChild(1).transform.position = new Vector3(-999, -999, 0);
 			}
 		} else if(!repaired){
+			sprites = fixedSprites;
 			//machine has been repaired
 			pointer.position = new Vector3(-999, -999, 0);
 			showrepairing = false;
@@ -60,6 +71,19 @@ public class BrokenMachine : MonoBehaviour {
 			GameObject.Find("Exit").GetComponent<exit>().machineCount--;
 			repaired = true;
 		}
+		//show animation
+		if (sprites.Length > 1){
+			float FPS = (float)1 / (float)frameRate;
+			if (currFrame >= FPS){
+				spriteID++;
+				currFrame = 0;
+			}
+			if (spriteID >= sprites.Length){
+				spriteID = 0;
+			}
+			render.material.mainTexture = sprites[spriteID];
+		}
+		currFrame += Time.deltaTime;
 	}
 	
 	void OnTriggerStay(Collider other) {
