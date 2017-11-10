@@ -33,15 +33,7 @@ public class QuantumAbilities : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		/*//Dev cheats
-		if (Input.GetKeyDown(KeyCode.U)){
-			SuperPosition = true;
-			Entanglement = true;
-			Tunneling = true;
-			WaveParticleDuality = true;
-		}*/
-		
-        playerpos = Player.position;
+		playerpos = Player.position;
 		
 		//check if player has left glass area after light mode shouldve been disabled
 		if(InLightForm && inGlass){
@@ -231,6 +223,11 @@ public class QuantumAbilities : MonoBehaviour {
 		labelsize.x = Screen.width*0.14f;
 		labelsize.y = labelsize.x*0.85f;
 		labelpos.x = labelsize.x;
+		float zoomlevel = Camera.main.orthographicSize - 5;
+		labelpos.y = -zoomlevel*50;
+		if(labelpos.y < -labelsize.y*0.95f){
+			labelpos.y = -labelsize.y*0.95f;
+		}
 		if(Entanglement){
 			GUI.Label(new Rect(labelpos.x, labelpos.y, labelsize.x, labelsize.y), " ", EntangleStyle);
 		} else if (SuperPosition){

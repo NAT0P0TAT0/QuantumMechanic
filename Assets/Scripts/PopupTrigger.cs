@@ -13,5 +13,9 @@ public class PopupTrigger : MonoBehaviour {
 			GameObject.Find("TextPopups").GetComponent<TextPopups>().OpenPopup(PopupID);
 			opened = true;
 		}
+        if (other.name == "Player-Light-Form" && !opened) {
+			GameObject.Find("TextPopups").GetComponent<TextPopups>().OpenPopup(PopupID);
+			opened = true;
+		}
     }
 }

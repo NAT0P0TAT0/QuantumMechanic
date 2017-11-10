@@ -129,7 +129,12 @@ public class levelcheck : MonoBehaviour {
 		//check every single pixel in the image
 		for(int y = 0; y < levelcodes[levelid].height; y++){
 			for(int x = 0; x < levelcodes[levelid].width; x++){
-				spawntile(x, y, levelid);//spawn tile based on pixel colour
+				if (x < 3 && y == 0){
+					Instantiate(blockprefab, new Vector3(x, y, 0), transform.rotation);
+					setAbilities(x, y, levelid);//spawn basic tile and set available abilities
+				} else {
+					spawntile(x, y, levelid);//spawn tile based on pixel colour
+				}
 			}
 		}
 		
@@ -139,16 +144,44 @@ public class levelcheck : MonoBehaviour {
 		GameObject.Find("Main Camera").GetComponent<Cameracontrol>().levelheight = levelcodes[levelid].height;
 		GameObject.Find("Main Camera").GetComponent<Cameracontrol>().Xlimit = levelcodes[levelid].width;
 	}
-	void spawntile(int x, int y, int levelid){
+	
+	private float red = 0;
+	private float green = 0;
+	private float blue = 0;
+	void getColourValues(int x, int y, int levelid){
 		//get the pixels colour values
 		pixelcol = levelcodes[levelid].GetPixel(x, y);
-		float red = pixelcol.r;
-		float green = pixelcol.g;
-		float blue = pixelcol.b;
+		red = pixelcol.r;
+		green = pixelcol.g;
+		blue = pixelcol.b;
 		//adjust for slight variation of decimals when reading pixels
 		if(red > 0.8){red = 3;} else if(red > 0.45){red = 2;} else if(red > 0.15){red = 1;} else {red = 0;}
 		if(green > 0.8){green = 3;} else if(green > 0.45){green = 2;} else if(green > 0.15){green = 1;} else {green = 0;}
 		if(blue > 0.8){blue = 3;} else if(blue > 0.45){blue = 2;} else if(blue > 0.15){blue = 1;} else {blue = 0;}
+	}
+	
+	void setAbilities(int x, int y, int levelid){
+		getColourValues(x, y, levelid);
+		if (x == 0 && y == 0){
+			GameObject.Find("Player-char").GetComponent<QuantumAbilities>().WaveParticleDuality = false;
+			GameObject.Find("Player-char").GetComponent<QuantumAbilities>().Tunneling = false;
+			GameObject.Find("Player-char").GetComponent<QuantumAbilities>().SuperPosition = false;
+			GameObject.Find("Player-char").GetComponent<QuantumAbilities>().Entanglement = false;
+		}
+		if(red == 3 && green == 0 && blue == 0) { //red - wave particle duality enabled
+			GameObject.Find("Player-char").GetComponent<QuantumAbilities>().WaveParticleDuality = true;
+		} else if(red == 0 && green == 3 && blue == 0) { //green - tunnleing enabled
+			GameObject.Find("Player-char").GetComponent<QuantumAbilities>().Tunneling = true;
+		} else if(red == 0 && green == 0 && blue == 3) { //blue - superposition enabled
+			GameObject.Find("Player-char").GetComponent<QuantumAbilities>().SuperPosition = true;
+		} else if(red == 0 && green == 3 && blue == 3) { //cyan - superpos and entanglement enabled
+			GameObject.Find("Player-char").GetComponent<QuantumAbilities>().SuperPosition = true;
+			GameObject.Find("Player-char").GetComponent<QuantumAbilities>().Entanglement = true;
+		}
+	}
+	
+	void spawntile(int x, int y, int levelid){
+		getColourValues(x, y, levelid);
 		
 		//define which of the 64 different shades the pixel is, shades can be seen in the "Level colour key" image
 

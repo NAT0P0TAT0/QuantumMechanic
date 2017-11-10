@@ -50,13 +50,13 @@ public class exit : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter(Collider other) {
-		if(other.gameObject.name == "Player-char"){
+		if(other.gameObject.name == "Player-char" || other.gameObject.name == "Player-Light-Form"){
 			go.GetComponent<levelcheck>().finished = true;
 		}
 	}
 	
 	void OnTriggerExit(Collider other) {
-		if(other.gameObject.name == "Player-char"){
+		if(other.gameObject.name == "Player-char" || other.gameObject.name == "Player-Light-Form"){
 			go.GetComponent<levelcheck>().finished = false;
 		}
 	}
