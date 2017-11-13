@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using System.Text.RegularExpressions;
 
 public class levelcheck : MonoBehaviour {
+	private int chapternum;
 	private int levelnum = 0;
 	public bool finished = false;
 	private int lastlevel;
@@ -14,6 +15,7 @@ public class levelcheck : MonoBehaviour {
 	private string levelgroup = "";
     public string nextScene = "end";
     private Texture2D[] levelcodes;
+	
 	void Start(){
 		//load levels from image files
 		levelgroup = SceneManager.GetActiveScene().name;
@@ -50,6 +52,8 @@ public class levelcheck : MonoBehaviour {
 		if((finished && ending == false)){
 			levelnum++;
 			ending = true;
+			//save better time
+			GameObject.Find("ScoreManager").GetComponent<ScoreCounter>().SaveScore(chapternum, levelnum);
 			StartCoroutine(Levelfinished());
 		}
 	}
@@ -88,7 +92,7 @@ public class levelcheck : MonoBehaviour {
 	void loadlevel(int levelid){
 		//Save player progress by getting chapter and level numbers
 		string numbersOnly = Regex.Replace(SceneManager.GetActiveScene().name, "[^0-9]", "");
-		int chapternum = int.Parse(numbersOnly);
+		chapternum = int.Parse(numbersOnly);
 		int templevelnum = levelid+1;
 		//update save if current chapter/level is later than saved chapter/level
 		int savedChapter = PlayerPrefs.GetInt("PlayersChapter");
@@ -102,6 +106,9 @@ public class levelcheck : MonoBehaviour {
 		
         //disable light mode
         GameObject.Find("Player-char").GetComponent<QuantumAbilities>().CancelLightMode(true);
+		
+		//start timer
+		GameObject.Find("ScoreManager").GetComponent<ScoreCounter>().ResetTimer();
 
 		finished = false;
 		ending = false;

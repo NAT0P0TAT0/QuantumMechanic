@@ -58,7 +58,7 @@ public class MENUTEST : MonoBehaviour {
 				buttonpos.y += buttonsize.y + padding;
 			}
 			buttonpos.x += buttonsize.x + padding;
-			buttonpos.y = (Screen.height/2) + Screen.height*0.117f;
+			buttonpos.y = (Screen.height/2) + Screen.height*0.117f - 15;
 		}
 		float offset = buttonsize.x*2.5f + (padding*2);
 		buttonpos.x = (Screen.width/2) - offset;
