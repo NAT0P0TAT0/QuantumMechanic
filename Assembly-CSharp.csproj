@@ -68,6 +68,7 @@
      <Compile Include="Assets\Scripts\EntangledClone.cs" />
      <Compile Include="Assets\Scripts\exit.cs" />
      <Compile Include="Assets\Scripts\levelcheck.cs" />
+     <Compile Include="Assets\Scripts\LevelEditor.cs" />
      <Compile Include="Assets\Scripts\lever.cs" />
      <Compile Include="Assets\Scripts\LightCancel.cs" />
      <Compile Include="Assets\Scripts\LightFormPlayer.cs" />
