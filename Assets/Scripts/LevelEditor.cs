@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Linq;
 
 public class LevelEditor : MonoBehaviour {
 
@@ -17,6 +18,46 @@ public class LevelEditor : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		//see if player chose to edit a pre-existing level or make a new one
+		foreach(GameObject fooObj in GameObject.FindGameObjectsWithTag("LevelContinue")){
+			levelname = fooObj.name;
+			Destroy(fooObj);
+			LoadLevel(levelname);
+		}
+	}
+	
+	void LoadLevel(string levelname){
+		string path = Application.dataPath;
+		if (Application.platform == RuntimePlatform.OSXPlayer) {
+			path += "/../../";
+		} else if (Application.platform == RuntimePlatform.WindowsPlayer) {
+			path += "/../";
+		}
+		int pathindex = path.IndexOf("/Quantum Mechanic_Data");
+		if(pathindex  < 0) {
+			pathindex = path.IndexOf("/Assets");
+		}
+		if(pathindex >= 0) {
+			path = path.Substring(0, pathindex);
+			path += "/CustomLevels";
+			DirectoryInfo dir = new DirectoryInfo(@path);
+			string[] extensions = new[] { ".png", ".PNG" };
+			FileInfo[] info = dir.GetFiles().Where(f => extensions.Contains(f.Extension.ToLower())).ToArray();
+			for (int i = 0; i < info.Length; i++){
+				string folderpath = path.ToString();
+				string filepath = info[i].ToString();
+				folderpath = folderpath.Replace("/", "\\");
+				filepath = filepath.Replace(folderpath, "");
+				filepath = filepath.Replace("\\", "");
+				filepath = filepath.Replace(".png", "");
+				filepath = filepath.Replace(".PNG", "");
+				if(filepath == levelname){
+					//level found
+					GenerateLevel(info[i].ToString());
+					errormessage = "Level loaded";
+				}
+			}
+		}
 	}
 	
 	Vector3 GetMenuObjectPos(int id){
@@ -46,15 +87,8 @@ public class LevelEditor : MonoBehaviour {
 		}
 		//change selected item
 		if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetMouseButtonUp(1)){
-			if(objectPreview){
-				if(selectedItem > angledcap){
-					objectPreview.position = new Vector3(-9999,-9999,0);
-					objectPreview = null;
-				} else {
-					Destroy(objectPreview.gameObject);
-				}
-			}
-			selectedItem = -1;
+			removePreview();
+			errormessage = "";
 		}
 		//open and close objects menu
 		if (Input.GetKey(KeyCode.LeftShift)){
@@ -158,14 +192,7 @@ public class LevelEditor : MonoBehaviour {
 				AimPos.z = 0;
 				if(selectedItem == -1 || Input.GetKey(KeyCode.LeftShift)){
 					//pick an object and create preview that follows mouse
-					if(objectPreview){
-						if(selectedItem > angledcap){
-							objectPreview.position = new Vector3(-9999,-9999,0);
-							objectPreview = null;
-						} else {
-							Destroy(objectPreview.gameObject);
-						}
-					}
+					removePreview();
 					selectedItem = GetObjectId(hit.transform.gameObject.name);
 					if(selectedItem > -1){
 						objectPreview = Instantiate(levelObjects[selectedItem], AimPos, transform.rotation);
@@ -199,6 +226,7 @@ public class LevelEditor : MonoBehaviour {
 		}
 		//delete objects
 		if (Input.GetMouseButtonUp(1)){
+			errormessage = "";
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(ray, out hit)){
@@ -254,6 +282,7 @@ public class LevelEditor : MonoBehaviour {
 		bool exit = false;
 		bool floorunderentry = false;
 		bool floorunderexit = false;
+		bool doorsunblocked = false;
 		errormessage = "";
 		Vector3 entrypos = new Vector3(-9999,-9999,0);
 		Vector3 exitpos = new Vector3(-9999,-9999,0);
@@ -269,16 +298,23 @@ public class LevelEditor : MonoBehaviour {
 				}
             }
 		}
+		doorsunblocked = true;
 		foreach(GameObject fooObj in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()){
             if (fooObj.name == "Block(Clone)"){
 				if(fooObj.transform.position.x == entrypos.x){
 					if(fooObj.transform.position.y == entrypos.y-1){
 						floorunderentry = true;
 					}
+					if(fooObj.transform.position.y == entrypos.y+1){
+						doorsunblocked = false;
+					}
 				}
 				if(fooObj.transform.position.x == exitpos.x){
 					if(fooObj.transform.position.y == exitpos.y-1){
 						floorunderexit = true;
+					}
+					if(fooObj.transform.position.y == exitpos.y+1){
+						doorsunblocked = false;
 					}
 				}
             }
@@ -289,10 +325,12 @@ public class LevelEditor : MonoBehaviour {
 			errormessage = "The level needs an exit!";
 		} else if(!floorunderentry || !floorunderexit){
 			errormessage = "The level needs floors under the entrance and exit!";
+		} else if(!doorsunblocked){
+			errormessage = "Cannot block the tops of doors!";
 		}
-		if(entry && exit && floorunderentry && floorunderexit){
+		if(entry && exit && floorunderentry && floorunderexit && doorsunblocked){
 			valid = true;
-			errormessage = "Level saved!";
+			errormessage = "Level saved";
 		}
 		if(valid){
 			//get level dimensions
@@ -323,6 +361,15 @@ public class LevelEditor : MonoBehaviour {
 			for (int y = ymin; y <= ymax; y++){
 				for (int x = xmin; x <= xmax; x++){
 					Color color = GetColor(x, y);
+					if(y == ymin && x == xmin && Lightmode){color = Color.red;}
+					if(y == ymin && x == xmin+1 && Tunnel){color = Color.green;}
+					if(y == ymin && x == xmin+2 && Superpos){
+						if(Entangle){
+							color = Color.cyan;
+						} else {
+							color = Color.blue;
+						}
+					}
 					texture.SetPixel(x-xmin, y-ymin, color);
 				}
 			}
@@ -389,6 +436,148 @@ public class LevelEditor : MonoBehaviour {
 		System.IO.File.WriteAllBytes (file.FullName, texture.EncodeToPNG());
 	}
 	
+	private Texture2D levelfile;
+	private byte[] fileData;
+	void GenerateLevel(string filepath){
+		//load level file as a texture
+		levelfile = null;
+		if (File.Exists(filepath))     {
+			fileData = File.ReadAllBytes(filepath);
+			levelfile = new Texture2D(2, 2);
+			levelfile.LoadImage(fileData);
+		}
+		//check every single pixel in the image
+		picWidth = levelfile.width;
+		picHeight = levelfile.height;
+		for(int y = 0; y < picHeight; y++){
+			for(int x = 0; x < picWidth; x++){
+				if (x < 3 && y == 0){
+					Transform newobject = Instantiate(levelObjects[0], new Vector3(x, y, 0), transform.rotation);
+					newobject.localScale = new Vector3(1,1,1);
+					setAbilities(x, y, levelfile);//spawn basic tile and set available abilities
+				} else {
+					spawntile(x, y, levelfile);//spawn tile based on pixel colour
+				}
+			}
+		}
+	}
+	private bool Superpos = false;
+	private bool Tunnel = false;
+	private bool Entangle = false;
+	private bool Lightmode = false;
+	private float red = 0;
+	private float green = 0;
+	private float blue = 0;
+	void getColourValues(int x, int y, Texture2D levelfile){
+		//get the pixels colour values
+		Color pixelcol = levelfile.GetPixel(x, y);
+		red = pixelcol.r;
+		green = pixelcol.g;
+		blue = pixelcol.b;
+		//adjust for slight variation of decimals when reading pixels
+		if(red > 0.8){red = 3;} else if(red > 0.45){red = 2;} else if(red > 0.15){red = 1;} else {red = 0;}
+		if(green > 0.8){green = 3;} else if(green > 0.45){green = 2;} else if(green > 0.15){green = 1;} else {green = 0;}
+		if(blue > 0.8){blue = 3;} else if(blue > 0.45){blue = 2;} else if(blue > 0.15){blue = 1;} else {blue = 0;}
+	}
+	void spawntile(int x, int y, Texture2D levelfile){
+		getColourValues(x, y, levelfile);
+		//place tiles based on colours
+		int blockID = -1;
+		if(red == 3 && green  == 3 && blue  == 3){
+			blockID = 0;//white - standard tile
+		} else if(red == 1 && green  == 1 && blue  == 1){
+			blockID = 1;//dark grey - back wall tile
+		} else if(red == 3 && green == 2 && blue == 2) {
+			blockID = 24;//lighter red - angled surface (bottom left)
+		} else if(red == 3 && green == 1 && blue == 1) { 
+			blockID = 25;//light red - angled surface (bottom right)
+		} else if(red == 3 && green == 0 && blue == 0) { 
+			blockID = 18;//red - transparent tile
+		} else if(red == 2 && green == 1 && blue == 1) { 
+			blockID = 26;//grey red - angled surface (top left)
+		} else if(red == 2 && green == 0 && blue == 0) { 
+			blockID = 27;//dark red - angled surface (top right)
+		} else if(red == 1 && green == 0 && blue == 0) { 
+			blockID = 19;//darker red - black surface that cancels lightform
+		} else if(red == 0 && green == 3 && blue == 0) { //green - player spawn
+			blockID = 2;
+		} else if(red == 1 && green == 2 && blue == 1) { //grey green - broken machine
+			blockID = 6;
+		} else if(red == 0 && green == 2 && blue == 0) { //dark green - level exit
+			blockID = 3;
+		} else if(red == 2 && green == 2 && blue == 3) { //lighter blue - lever (facing right)
+			blockID = 11;
+		} else if(red == 1 && green == 1 && blue == 3) { //light blue - lever (facing left)
+			blockID = 10;
+		} else if(red == 0 && green == 0 && blue == 3) { //blue - toggleable block (on)
+			blockID = 14;
+		} else if(red == 1 && green == 1 && blue == 2) { //grey blue - toggleable block (off)
+			blockID = 15;
+		} else if(red == 0 && green == 0 && blue == 2) { //dark blue - pressureplate
+			blockID = 8;
+		} else if(red == 0 && green == 0 && blue == 1) { //darker blue - button
+			blockID = 7;
+		} else if(red == 3 && green == 3 && blue == 2) { //lighter yellow - security camera (right)
+			blockID = 13;
+		} else if(red == 3 && green == 3 && blue == 1) { //light yellow - security camera (left)
+			blockID = 12;
+		} else if(red == 3 && green == 3 && blue == 0) { //yellow - wire on solid tile
+			blockID = 5;
+		} else if(red == 2 && green == 2 && blue == 1) { //grey yellow - wire on background tile
+			blockID = 4;
+		} else if(red == 2 && green == 2 && blue == 0) { //dark yellow - conveyror belt (right)
+			blockID = 17;
+		} else if(red == 1 && green == 1 && blue == 0) { //darker yellow - conveyror belt (left)
+			blockID = 16;
+		} else if(red == 3 && green == 2 && blue == 3) { //lighter magenta - thin floor/ceiling (with backwall)
+			blockID = 22;
+		} else if(red == 3 && green == 1 && blue == 3) { //light magenta - thin wall (with backwall)
+			blockID = 23;
+		} else if(red == 3 && green == 0 && blue == 3) { //magenta - thin floor/ceiling
+			blockID = 20;
+		} else if(red == 2 && green == 1 && blue == 2) { //grey magenta - thin wall
+			blockID = 21;
+		} else if(red == 2 && green == 0 && blue == 2) { //dark magenta - pressureplate (with backwall)
+			blockID = 9;
+		}
+		if(blockID > -1){
+			Transform newobject = Instantiate(levelObjects[blockID], new Vector3(x, y, 0), transform.rotation);
+			newobject.localScale = new Vector3(1,1,1);
+		}
+	}
+	void setAbilities(int x, int y, Texture2D levelfile){
+		getColourValues(x, y, levelfile);
+		if (x == 0 && y == 0){
+			Superpos = false;
+			Tunnel = false;
+			Entangle = false;
+			Lightmode = false;
+		}
+		if(red == 3 && green == 0 && blue == 0) { //red - wave particle duality enabled
+			Lightmode = true;
+		} else if(red == 0 && green == 3 && blue == 0) { //green - tunnleing enabled
+			Tunnel = true;
+		} else if(red == 0 && green == 0 && blue == 3) { //blue - superposition enabled
+			Superpos = true;
+		} else if(red == 0 && green == 3 && blue == 3) { //cyan - superpos and entanglement enabled
+			Superpos = true;
+			Entangle = true;
+		}
+	}
+	
+	void removePreview(){
+		if(objectPreview){
+			if(objectPreview.name.Contains("AngledTile")){
+				objectPreview.position = new Vector3(-9999,-9999,0);
+				objectPreview = null;
+			} else {
+				DestroyImmediate(objectPreview.gameObject);
+			}
+		}
+		selectedItem = -1;
+	}
+	
+	
 	Vector2 labelsize = new Vector2(0, 0);
 	Vector2 labelpos = new Vector2(0, 0);
 	public GUIStyle textStyle;
@@ -410,36 +599,123 @@ public class LevelEditor : MonoBehaviour {
 		labelsize.x = Screen.width;
 		GUI.Label(new Rect(labelpos.x, labelpos.y, labelsize.x, labelsize.y), "W/A/S/D to move camera, Q/E/Mousewheel to zoom", textStyle);
 		labelpos.y += labelsize.y;
-		GUI.Label(new Rect(labelpos.x, labelpos.y, labelsize.x, labelsize.y), "Hold SHIFT to show list and LEFT CLICK to pick an object", textStyle);
+		GUI.Label(new Rect(labelpos.x, labelpos.y, labelsize.x, labelsize.y), "SHIFT to show list, LEFT CLICK on object to choose", textStyle);
 		labelpos.y += labelsize.y;
-		GUI.Label(new Rect(labelpos.x, labelpos.y, labelsize.x, labelsize.y), "LEFT CLICK to place objects, RIGHT CLICK to delete objects", textStyle);
+		GUI.Label(new Rect(labelpos.x, labelpos.y, labelsize.x, labelsize.y), "LEFT CLICK to place chosen object, RIGHT CLICK to delete", textStyle);
+		//give user feedback
 		if(errormessage != ""){
 			textStyle.normal.textColor = Color.red;
 			labelpos.y += labelsize.y;
 			GUI.Label(new Rect(labelpos.x, labelpos.y, labelsize.x, labelsize.y), errormessage, textStyle);
 			textStyle.normal.textColor = Color.white;
 		}
+		//let user see and change the level name
 		if(showlevelname){
 			labelsize.y = 30;
 			textStyle.fontSize = Mathf.RoundToInt(fontsize*0.75f);
 			labelpos.y = Screen.height-labelsize.y;
-			levelname = GUI.TextField(new Rect(labelpos.x, labelpos.y, labelsize.x, labelsize.y), levelname, textStyle);
+			GUI.Label(new Rect(labelpos.x, labelpos.y, labelsize.x, labelsize.y), "", textStyle);
+			levelname = GUI.TextField(new Rect(Screen.width*0.32f, labelpos.y, Screen.width*0.42f, labelsize.y), levelname, textStyle);
 			labelpos.y -= labelsize.y;
 			GUI.Label(new Rect(labelpos.x, labelpos.y, labelsize.x, labelsize.y), "Edit the levels name below", textStyle);
-			//save the level to a file
-			if (GUI.Button(new Rect(Screen.width-160, labelpos.y+10, 150, labelsize.y), "Save the level")){
-				if(objectPreview){
-					if(objectPreview.name.Contains("AngledTile")){
-						objectPreview.position = new Vector3(-9999,-9999,0);
-						objectPreview = null;
-					} else {
-						DestroyImmediate(objectPreview.gameObject);
-					}
-				}
-				selectedItem = -1;
+			//save the level to a file and then play
+			if (GUI.Button(new Rect(Screen.width-160, labelpos.y+15, 150, labelsize.y), "Save and Play level")){
+				removePreview();
 				SaveLevel();
 			}
+			//save the level to a file
+			labelpos.y -= labelsize.y+25;
+			if (GUI.Button(new Rect(Screen.width-160, labelpos.y+15, 150, labelsize.y), "Save the level")){
+				removePreview();
+				SaveLevel();
+			}
+			//reload level from file
+			labelpos.y -= labelsize.y+10;
+			if (GUI.Button(new Rect(Screen.width-160, labelpos.y+10, 150, labelsize.y), "Reload level")){
+				removePreview();
+				foreach(GameObject fooObj in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()){
+					if (fooObj.name.Contains("(Clone)")){
+						Destroy(fooObj);
+					}
+				}
+				LoadLevel(levelname);
+			}
+			//add border
+			labelpos.y -= labelsize.y+10;
+			if (GUI.Button(new Rect(Screen.width-160, labelpos.y+10, 150, labelsize.y), "Add Border")){
+				removePreview();
+				//get level dimensions
+				int xmin = 999999;
+				int ymin = 999999;
+				int xmax = -99999;
+				int ymax = -99999;
+				foreach(GameObject fooObj in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()){
+					if (fooObj.name.Contains("(Clone)")){
+						if(fooObj.transform.position.x < xmin && fooObj.transform.position.x > -999){
+							xmin = Mathf.FloorToInt(fooObj.transform.position.x);
+						}
+						if(fooObj.transform.position.y < ymin && fooObj.transform.position.y > -999){
+							ymin = Mathf.FloorToInt(fooObj.transform.position.y);
+						}
+						if(fooObj.transform.position.x > xmax){
+							xmax = Mathf.FloorToInt(fooObj.transform.position.x);
+						}
+						if(fooObj.transform.position.y > ymax){
+							ymax = Mathf.FloorToInt(fooObj.transform.position.y);
+						}
+					}
+				}
+				xmin-= 6;
+				xmax+= 6;
+				ymin-= 2;
+				ymax+= 2;
+				//add blocks around previous outer level bounds
+				for (int x = xmin; x <= xmax; x++){
+					Transform newobject = Instantiate(levelObjects[0], new Vector3(x, ymin, 0), transform.rotation);
+					newobject.localScale = new Vector3(1,1,1);
+					newobject = Instantiate(levelObjects[0], new Vector3(x, ymin+1, 0), transform.rotation);
+					newobject.localScale = new Vector3(1,1,1);
+					newobject = Instantiate(levelObjects[0], new Vector3(x, ymax, 0), transform.rotation);
+					newobject.localScale = new Vector3(1,1,1);
+					newobject = Instantiate(levelObjects[0], new Vector3(x, ymax-1, 0), transform.rotation);
+					newobject.localScale = new Vector3(1,1,1);
+				}
+				for (int y = ymin; y <= ymax; y++){
+					for (int i = 0; i < 6; i++){
+						Transform newobject = Instantiate(levelObjects[0], new Vector3(xmin+i, y, 0), transform.rotation);
+						newobject.localScale = new Vector3(1,1,1);
+						newobject = Instantiate(levelObjects[0], new Vector3(xmax-i, y, 0), transform.rotation);
+						newobject.localScale = new Vector3(1,1,1);
+					}
+				}
+			}
+			//go back to menu
+			labelpos.y -= labelsize.y+10;
+			if (GUI.Button(new Rect(Screen.width-160, labelpos.y+10, 150, labelsize.y), "Back to list")){
+				removePreview();
+			}
+			//trash level
+			labelpos.y -= labelsize.y+10;
+			if (GUI.Button(new Rect(Screen.width-160, labelpos.y+10, 150, labelsize.y), "Destroy all objects")){
+				removePreview();
+				foreach(GameObject fooObj in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()){
+					if (fooObj.name.Contains("(Clone)")){
+						Destroy(fooObj);
+					}
+				}
+			}
+			//center cam
+			labelpos.y -= labelsize.y+10;
+			if (GUI.Button(new Rect(Screen.width-160, labelpos.y+10, 150, labelsize.y), "Recenter camera")){
+				removePreview();
+				Vector3 campos = GameObject.Find("Main Camera").transform.position;
+				campos.x = 0;
+				campos.y = 0;
+				Camera.main.orthographicSize = 8;
+				GameObject.Find("Main Camera").transform.position = campos;
+			}
 		}
+		//tell user what objects they are choosing
 		if(mouseovertext != ""){
 			textStyle.fontSize = fontsize/2;
 			labelsize.x = 250;
@@ -447,6 +723,13 @@ public class LevelEditor : MonoBehaviour {
 			labelpos.x = Input.mousePosition.x-125;
 			labelpos.y = Screen.height - Input.mousePosition.y - 30;
 			GUI.Label(new Rect(labelpos.x, labelpos.y, labelsize.x, labelsize.y), mouseovertext, textStyle);
+		}
+		//let user pick available abilities
+		if(showlevelname){
+			Superpos = GUI.Toggle(new Rect(10, Screen.height-(2*labelsize.y)+5, 100, 20), Superpos, "Superposition");
+			Entangle = GUI.Toggle(new Rect(10, Screen.height-(2*labelsize.y)+30, 100, 20), Entangle, "Entanglement");
+			Tunnel = GUI.Toggle(new Rect(115, Screen.height-(2*labelsize.y)+5, 100, 20), Tunnel, "Tunneling");
+			Lightmode = GUI.Toggle(new Rect(115, Screen.height-(2*labelsize.y)+30, 100, 20), Lightmode, "Wave/Particle Duality");
 		}
 	}
 }

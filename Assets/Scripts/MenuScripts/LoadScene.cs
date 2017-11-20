@@ -26,10 +26,10 @@ public class LoadScene : MonoBehaviour
 		if(savedChapter == 0 || savedLevel == 0){
 			SceneManager.LoadScene(1);
 		} else {
-		Transform levelloader = GameObject.Find("LevelContinue").transform;
-		levelloader.name = "" + savedLevel;
-		DontDestroyOnLoad(levelloader);
-		SceneManager.LoadScene("Part" + savedChapter);
+			Transform levelloader = GameObject.Find("LevelContinue").transform;
+			levelloader.name = "" + savedLevel;
+			DontDestroyOnLoad(levelloader);
+			SceneManager.LoadScene("Part" + savedChapter);
 		}
     }
 }
