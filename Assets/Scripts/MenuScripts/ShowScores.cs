@@ -9,8 +9,6 @@ public class ShowScores : MonoBehaviour {
 	public GUIStyle labelstyle2;
 	//Menu Canvas
 	public Canvas MainMenu;
-	int savedChapter = 1;
-	int savedLevel = 1;
 	private float padding = 1;
 	Vector2 buttonsize = new Vector2(0, 0);
 	Vector2 buttonpos = new Vector2(0, 0);

@@ -27,7 +27,7 @@ public class MENUTEST : MonoBehaviour {
 	
 	void Update(){
 		if (Input.GetKey(KeyCode.G)){
-			SceneManager.LoadScene("CustomLevels");
+			SceneManager.LoadScene("LevelEditor");
 		}
 	}
 	
