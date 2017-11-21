@@ -1,12 +1,12 @@
-﻿using System.Collections;
+﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using System.IO;
 using System.Linq;
+using UnityEngine.SceneManagement;
+using System.IO;
 
 public class LevelEditor : MonoBehaviour {
 
-	private byte[] imageBuffer;
 	private int picWidth = 200;
 	private int picHeight = 100;
 	
@@ -278,6 +278,7 @@ public class LevelEditor : MonoBehaviour {
 	void SaveLevel(){
 		//check that level meets requirements
 		bool valid = false;
+		bool named = false;
 		bool entry = false;
 		bool exit = false;
 		bool floorunderentry = false;
@@ -319,7 +320,12 @@ public class LevelEditor : MonoBehaviour {
 				}
             }
 		}
-		if(!entry){
+		if(levelname != "ENTER LEVEL NAME HERE" && levelname != "" && levelname != " " && levelname != null){
+			named = !string.IsNullOrEmpty(levelname) && levelname.IndexOfAny(Path.GetInvalidFileNameChars()) < 0;
+		}
+		if(!named){
+			errormessage = "The level needs a valid name!";
+		} else if(!entry){
 			errormessage = "The level needs an entrance!";
 		} else if(!exit){
 			errormessage = "The level needs an exit!";
@@ -328,7 +334,7 @@ public class LevelEditor : MonoBehaviour {
 		} else if(!doorsunblocked){
 			errormessage = "Cannot block the tops of doors!";
 		}
-		if(entry && exit && floorunderentry && floorunderexit && doorsunblocked){
+		if(named && entry && exit && floorunderentry && floorunderexit && doorsunblocked){
 			valid = true;
 			errormessage = "Level saved";
 		}
@@ -438,10 +444,12 @@ public class LevelEditor : MonoBehaviour {
 	
 	private Texture2D levelfile;
 	private byte[] fileData;
+	private string levelfilepath = "";
 	void GenerateLevel(string filepath){
+		levelfilepath = filepath;
 		//load level file as a texture
 		levelfile = null;
-		if (File.Exists(filepath))     {
+		if (File.Exists(filepath)) {
 			fileData = File.ReadAllBytes(filepath);
 			levelfile = new Texture2D(2, 2);
 			levelfile.LoadImage(fileData);
@@ -584,7 +592,7 @@ public class LevelEditor : MonoBehaviour {
 	private string errormessage = "";
 	private string mouseovertext = "";
 	private bool showlevelname = false;
-	private string levelname = "customlevelname";
+	private string levelname = "ENTER LEVEL NAME HERE";
 	//display text
 	void OnGUI() {
 		int fontsize = 25;
@@ -622,6 +630,10 @@ public class LevelEditor : MonoBehaviour {
 			if (GUI.Button(new Rect(Screen.width-160, labelpos.y+15, 150, labelsize.y), "Save and Play level")){
 				removePreview();
 				SaveLevel();
+				GameObject levelloader = new GameObject(levelname);
+				levelloader.tag = "LevelContinue";
+				DontDestroyOnLoad(levelloader);
+				SceneManager.LoadScene("CustomLevels");
 			}
 			//save the level to a file
 			labelpos.y -= labelsize.y+25;
@@ -691,18 +703,9 @@ public class LevelEditor : MonoBehaviour {
 			}
 			//go back to menu
 			labelpos.y -= labelsize.y+10;
-			if (GUI.Button(new Rect(Screen.width-160, labelpos.y+10, 150, labelsize.y), "Back to list")){
+			if (GUI.Button(new Rect(Screen.width-160, labelpos.y+10, 150, labelsize.y), "Back to menu")){
 				removePreview();
-			}
-			//trash level
-			labelpos.y -= labelsize.y+10;
-			if (GUI.Button(new Rect(Screen.width-160, labelpos.y+10, 150, labelsize.y), "Destroy all objects")){
-				removePreview();
-				foreach(GameObject fooObj in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()){
-					if (fooObj.name.Contains("(Clone)")){
-						Destroy(fooObj);
-					}
-				}
+				SceneManager.LoadScene("MainMenu");
 			}
 			//center cam
 			labelpos.y -= labelsize.y+10;
@@ -713,6 +716,41 @@ public class LevelEditor : MonoBehaviour {
 				campos.y = 0;
 				Camera.main.orthographicSize = 8;
 				GameObject.Find("Main Camera").transform.position = campos;
+			}
+			//wipe level objects
+			labelpos.y -= labelsize.y+10;
+			if (GUI.Button(new Rect(Screen.width-160, labelpos.y+10, 150, labelsize.y), "Destroy all objects")){
+				removePreview();
+				foreach(GameObject fooObj in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()){
+					if (fooObj.name.Contains("(Clone)")){
+						Destroy(fooObj);
+					}
+				}
+			}
+			//delete level
+			labelpos.y -= labelsize.y+10;
+			if (GUI.Button(new Rect(Screen.width-160, labelpos.y+10, 150, labelsize.y), "Delete level")){
+				removePreview();
+				if(errormessage != "Are you sure you want to delete the level?"){
+					errormessage = "Are you sure you want to delete the level?";
+				} else {
+					foreach(GameObject fooObj in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()){
+						if (fooObj.name.Contains("(Clone)")){
+							Destroy(fooObj);
+						}
+					}
+					SaveLevel();
+					if (File.Exists(levelfilepath)) {
+						File.Delete(levelfilepath);
+					}
+					LoadLevel(levelname);
+					foreach(GameObject fooObj in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()){
+						if (fooObj.name.Contains("(Clone)")){
+							Destroy(fooObj);
+						}
+					}
+					errormessage = "Level deleted";
+				}
 			}
 		}
 		//tell user what objects they are choosing

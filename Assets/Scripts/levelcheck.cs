@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.SceneManagement;
 using System.Text.RegularExpressions;
+using System.IO;
 
 public class levelcheck : MonoBehaviour {
 	private int chapternum;
@@ -16,22 +17,36 @@ public class levelcheck : MonoBehaviour {
     public string nextScene = "end";
     private Texture2D[] levelcodes;
 	
+	public bool customlevel = false;
+	private string levelname = "";
+	
 	void Start(){
 		//load levels from image files
-		levelgroup = SceneManager.GetActiveScene().name;
-		Object[] textures = Resources.LoadAll(_imagePath+"/"+levelgroup, typeof(Texture2D));
-		if(textures.Length == 0){
-			Debug.Log("Incorrect levelgroup filepath");
-		}
-        levelcodes = new Texture2D[textures.Length];
-        for (int i = 0; i < textures.Length; i++){
-            levelcodes[i] = (Texture2D)textures[i];
-        }
-		lastlevel = levelcodes.Length;
-		//see if player continued mid-chapter from main menu, if not just load level 1
-		foreach(GameObject fooObj in GameObject.FindGameObjectsWithTag("LevelContinue")){
-			levelnum = int.Parse(fooObj.name)-1;
-			Destroy(fooObj);
+		//if custom levels load from string, otherwise grab from resources folder
+		if(customlevel){
+			foreach(GameObject fooObj in GameObject.FindGameObjectsWithTag("LevelContinue")){
+				levelname = fooObj.name;
+				Destroy(fooObj);
+			}
+			lastlevel = 1;
+			levelcodes = new Texture2D[1];
+			loadTextureFromImageName();
+		} else {
+			levelgroup = SceneManager.GetActiveScene().name;
+			Object[] textures = Resources.LoadAll(_imagePath+"/"+levelgroup, typeof(Texture2D));
+			if(textures.Length == 0){
+				Debug.Log("Incorrect levelgroup filepath");
+			}
+			levelcodes = new Texture2D[textures.Length];
+			for (int i = 0; i < textures.Length; i++){
+				levelcodes[i] = (Texture2D)textures[i];
+			}
+			lastlevel = levelcodes.Length;
+			//see if player continued mid-chapter from main menu, if not just load level 1
+			foreach(GameObject fooObj in GameObject.FindGameObjectsWithTag("LevelContinue")){
+				levelnum = int.Parse(fooObj.name)-1;
+				Destroy(fooObj);
+			}
 		}
 		//load level
 		loadlevel(levelnum);
@@ -53,6 +68,10 @@ public class levelcheck : MonoBehaviour {
 			levelnum++;
 			ending = true;
 			//save better time
+			if(customlevel){
+				GameObject.Find("ScoreManager").GetComponent<ScoreCounter>().customlevel = true;
+				GameObject.Find("ScoreManager").GetComponent<ScoreCounter>().levelname = levelname;
+			}
 			GameObject.Find("ScoreManager").GetComponent<ScoreCounter>().SaveScore(chapternum, levelnum);
 			StartCoroutine(Levelfinished());
 		}
@@ -90,18 +109,20 @@ public class levelcheck : MonoBehaviour {
 	private int popupid = 0;
 	private Color pixelcol;
 	void loadlevel(int levelid){
-		//Save player progress by getting chapter and level numbers
-		string numbersOnly = Regex.Replace(SceneManager.GetActiveScene().name, "[^0-9]", "");
-		chapternum = int.Parse(numbersOnly);
-		int templevelnum = levelid+1;
-		//update save if current chapter/level is later than saved chapter/level
-		int savedChapter = PlayerPrefs.GetInt("PlayersChapter");
-		int savedLevel = PlayerPrefs.GetInt("PlayersLevel");
-		if(chapternum > savedChapter){
-			PlayerPrefs.SetInt("PlayersChapter", chapternum);
-			PlayerPrefs.SetInt("PlayersLevel", templevelnum);
-		} else if(templevelnum > savedLevel){
-			PlayerPrefs.SetInt("PlayersLevel", templevelnum);
+		if(!customlevel){
+			//Save player progress by getting chapter and level numbers
+			string numbersOnly = Regex.Replace(SceneManager.GetActiveScene().name, "[^0-9]", "");
+			chapternum = int.Parse(numbersOnly);
+			int templevelnum = levelid+1;
+			//update save if current chapter/level is later than saved chapter/level
+			int savedChapter = PlayerPrefs.GetInt("PlayersChapter");
+			int savedLevel = PlayerPrefs.GetInt("PlayersLevel");
+			if(chapternum > savedChapter){
+				PlayerPrefs.SetInt("PlayersChapter", chapternum);
+				PlayerPrefs.SetInt("PlayersLevel", templevelnum);
+			} else if(templevelnum > savedLevel){
+				PlayerPrefs.SetInt("PlayersLevel", templevelnum);
+			}
 		}
 		
         //disable light mode
@@ -358,5 +379,44 @@ public class levelcheck : MonoBehaviour {
 	
 	public int GetLevelNum(){
 		return levelnum+1;
+	}
+	
+	private byte[] fileData;
+	void loadTextureFromImageName(){
+		string path = Application.dataPath;
+		if (Application.platform == RuntimePlatform.OSXPlayer) {
+			path += "/../../";
+		} else if (Application.platform == RuntimePlatform.WindowsPlayer) {
+			path += "/../";
+		}
+		int pathindex = path.IndexOf("/Quantum Mechanic_Data");
+		if(pathindex  < 0) {
+			pathindex = path.IndexOf("/Assets");
+		}
+		if(pathindex >= 0) {
+			path = path.Substring(0, pathindex);
+			path += "/CustomLevels";
+			DirectoryInfo dir = new DirectoryInfo(@path);
+			string[] extensions = new[] { ".png", ".PNG" };
+			FileInfo[] info = dir.GetFiles().Where(f => extensions.Contains(f.Extension.ToLower())).ToArray();
+			for (int i = 0; i < info.Length; i++){
+				string folderpath = path.ToString();
+				string filepath = info[i].ToString();
+				folderpath = folderpath.Replace("/", "\\");
+				filepath = filepath.Replace(folderpath, "");
+				filepath = filepath.Replace("\\", "");
+				filepath = filepath.Replace(".png", "");
+				filepath = filepath.Replace(".PNG", "");
+				if(filepath == levelname){
+					//level file found
+					//load level file as a texture
+					if (File.Exists(info[i].ToString())) {
+						fileData = File.ReadAllBytes(info[i].ToString());
+						levelcodes[0] = new Texture2D(2, 2);
+						levelcodes[0].LoadImage(fileData);
+					}
+				}
+			}
+		}
 	}
 }

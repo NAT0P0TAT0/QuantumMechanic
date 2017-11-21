@@ -25,12 +25,6 @@ public class MENUTEST : MonoBehaviour {
 		savedLevel = PlayerPrefs.GetInt("PlayersLevel");
 	}
 	
-	void Update(){
-		if (Input.GetKey(KeyCode.G)){
-			SceneManager.LoadScene("LevelEditor");
-		}
-	}
-	
 	void OnGUI() {
 		buttonsize = new Vector2(Screen.width*0.044f, Screen.width*0.035f);
 		padding = Screen.width*0.015f;

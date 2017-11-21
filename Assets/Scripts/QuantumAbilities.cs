@@ -225,9 +225,8 @@ public class QuantumAbilities : MonoBehaviour {
 		labelpos.x = labelsize.x;
 		float zoomlevel = Camera.main.orthographicSize - 5;
 		labelpos.y = -zoomlevel*50;
-		if(labelpos.y < -labelsize.y*0.95f){
-			labelpos.y = -labelsize.y*0.95f;
-		}
+		if(labelpos.y < -labelsize.y*0.95f){labelpos.y = -labelsize.y*0.95f;}
+		if(labelpos.y > 0){labelpos.y = 0;}
 		if(Entanglement){
 			GUI.Label(new Rect(labelpos.x, labelpos.y, labelsize.x, labelsize.y), " ", EntangleStyle);
 		} else if (SuperPosition){

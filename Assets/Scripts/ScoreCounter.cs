@@ -7,6 +7,8 @@ public class ScoreCounter : MonoBehaviour {
 	private float StartTime = 0f;
 	private float Currtime = 0f;
 	private int AbilityCount = 0;
+	public bool customlevel = false;
+	public string levelname = "";
 
 	// Use this for initialization
 	void Start () {
@@ -28,13 +30,23 @@ public class ScoreCounter : MonoBehaviour {
 		//check and set level time and ability use
 		Debug.Log("checking time");
 		float checkTime = PlayerPrefs.GetFloat(chapter+"-"+level+"-time");
+		if(customlevel){checkTime = PlayerPrefs.GetFloat(levelname+"-time");}
 		if (Currtime < checkTime || checkTime == 0){
-			PlayerPrefs.SetFloat(chapter+"-"+level+"-time", Currtime);
+			if(customlevel){
+				PlayerPrefs.SetFloat(levelname+"-time", Currtime);
+			} else {
+				PlayerPrefs.SetFloat(chapter+"-"+level+"-time", Currtime);
+			}
 		}
 		Debug.Log("checking uses");
 		int checkUses = PlayerPrefs.GetInt(chapter+"-"+level+"-abilities");
+		if(customlevel){checkUses = PlayerPrefs.GetInt(levelname+"-abilities");}
 		if (AbilityCount < checkUses || checkUses == 0){
-			PlayerPrefs.SetInt(chapter+"-"+level+"-abilities", AbilityCount);
+			if(customlevel){
+				PlayerPrefs.SetInt(levelname+"-abilities", AbilityCount);
+			} else {
+				PlayerPrefs.SetInt(chapter+"-"+level+"-abilities", AbilityCount);
+			}
 		}
 	}
 	

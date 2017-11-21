@@ -78,6 +78,7 @@
      <Compile Include="Assets\Scripts\MenuScripts\MENUTEST.cs" />
      <Compile Include="Assets\Scripts\MenuScripts\PauseGame.cs" />
      <Compile Include="Assets\Scripts\MenuScripts\QuitGame.cs" />
+     <Compile Include="Assets\Scripts\MenuScripts\ShowCustomLevels.cs" />
      <Compile Include="Assets\Scripts\MenuScripts\ShowScores.cs" />
      <Compile Include="Assets\Scripts\MenuScripts\ToggleUpdate.cs" />
      <Compile Include="Assets\Scripts\MusicPlayer.cs" />
