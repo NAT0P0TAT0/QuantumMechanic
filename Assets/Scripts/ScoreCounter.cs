@@ -54,4 +54,15 @@ public class ScoreCounter : MonoBehaviour {
 		StartTime = Time.timeSinceLevelLoad;
 		AbilityCount = 0;
 	}
+	
+	
+	
+	public GUIStyle textStyle;
+	//display players current score
+	void OnGUI() {
+		Rect dimensions = new Rect(0, Screen.height-50, Screen.width/2, 50);
+		GUI.Label(dimensions, Currtime.ToString("0.00")+"s", textStyle);
+		dimensions = new Rect(Screen.width/2, Screen.height-50, Screen.width/2, 50);
+		GUI.Label(dimensions, AbilityCount.ToString(), textStyle);
+	}
 }

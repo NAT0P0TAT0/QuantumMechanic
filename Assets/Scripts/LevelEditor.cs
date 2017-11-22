@@ -275,9 +275,10 @@ public class LevelEditor : MonoBehaviour {
 		return id;
 	}
 	
+	bool valid = false;
 	void SaveLevel(){
 		//check that level meets requirements
-		bool valid = false;
+		valid = false;
 		bool named = false;
 		bool entry = false;
 		bool exit = false;
@@ -630,16 +631,19 @@ public class LevelEditor : MonoBehaviour {
 			if (GUI.Button(new Rect(Screen.width-160, labelpos.y+15, 150, labelsize.y), "Save and Play level")){
 				removePreview();
 				SaveLevel();
-				GameObject levelloader = new GameObject(levelname);
-				levelloader.tag = "LevelContinue";
-				DontDestroyOnLoad(levelloader);
-				SceneManager.LoadScene("CustomLevels");
+				if(valid){
+					GameObject levelloader = new GameObject(levelname);
+					levelloader.tag = "LevelContinue";
+					DontDestroyOnLoad(levelloader);
+					SceneManager.LoadScene("CustomLevels");
+				}
 			}
 			//save the level to a file
 			labelpos.y -= labelsize.y+25;
 			if (GUI.Button(new Rect(Screen.width-160, labelpos.y+15, 150, labelsize.y), "Save the level")){
 				removePreview();
 				SaveLevel();
+				valid = false;
 			}
 			//reload level from file
 			labelpos.y -= labelsize.y+10;
@@ -749,6 +753,7 @@ public class LevelEditor : MonoBehaviour {
 							Destroy(fooObj);
 						}
 					}
+					valid = false;
 					errormessage = "Level deleted";
 				}
 			}

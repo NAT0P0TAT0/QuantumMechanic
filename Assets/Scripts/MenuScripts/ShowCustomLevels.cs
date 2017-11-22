@@ -39,6 +39,7 @@ public class ShowCustomLevels : MonoBehaviour {
 		if(pathindex >= 0) {
 			path = path.Substring(0, pathindex);
 			path += "/CustomLevels";
+			System.IO.Directory.CreateDirectory(@path);
 			DirectoryInfo dir = new DirectoryInfo(@path);
 			string[] extensions = new[] { ".png", ".PNG" };
 			FileInfo[] info = dir.GetFiles().Where(f => extensions.Contains(f.Extension.ToLower())).ToArray();

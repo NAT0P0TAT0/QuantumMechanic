@@ -40,7 +40,7 @@ public class LightFormPlayer : MonoBehaviour {
 			
 			//turn back
 			if (Time.timeSinceLevelLoad > despawnTime){
-				GameObject.Find("Player-char").GetComponent<QuantumAbilities>().CancelLightMode(false);
+				//GameObject.Find("Player-char").GetComponent<QuantumAbilities>().CancelLightMode(false);
 			}
 		} else {
 			despawnTime = Time.timeSinceLevelLoad + 5f;
