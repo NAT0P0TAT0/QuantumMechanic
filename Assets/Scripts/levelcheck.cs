@@ -409,9 +409,10 @@ public class levelcheck : MonoBehaviour {
 				filepath = filepath.Replace(".PNG", "");
 				if(filepath == levelname){
 					//level file found
+					string fullpath = folderpath+"\\"+filepath+".png";
 					//load level file as a texture
-					if (File.Exists(info[i].ToString())) {
-						fileData = File.ReadAllBytes(info[i].ToString());
+					if (File.Exists(fullpath)) {
+						fileData = File.ReadAllBytes(fullpath);
 						levelcodes[0] = new Texture2D(2, 2);
 						levelcodes[0].LoadImage(fileData);
 					}

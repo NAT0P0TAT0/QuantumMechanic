@@ -53,7 +53,8 @@ public class LevelEditor : MonoBehaviour {
 				filepath = filepath.Replace(".PNG", "");
 				if(filepath == levelname){
 					//level found
-					GenerateLevel(info[i].ToString());
+					string fullpath = folderpath+"\\"+filepath+".png";
+					GenerateLevel(fullpath);
 					errormessage = "Level loaded";
 				}
 			}
