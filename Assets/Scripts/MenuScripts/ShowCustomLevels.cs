@@ -59,6 +59,7 @@ public class ShowCustomLevels : MonoBehaviour {
 		}
 	}
 	
+	public Transform musicprefab;
 	void OnGUI() {
 		float screenwidth = Screen.width;
 		screenwidth = 720;
@@ -80,6 +81,9 @@ public class ShowCustomLevels : MonoBehaviour {
 				}
 				//create new level
 				if (GUI.Button(new Rect(buttonpos.x-40, buttonpos.y+75, buttonsize.x+80, buttonsize.y*0.9f), "CREATE NEW", buttonstyle)){
+					Transform musicplayer = Instantiate(musicprefab, new Vector3(0, 0, 0), transform.rotation);
+					musicplayer.name = "MusicPlayer2";
+					DontDestroyOnLoad(musicplayer);
 					SceneManager.LoadScene("LevelEditor");
 				}
 				//refresh level list
@@ -114,6 +118,9 @@ public class ShowCustomLevels : MonoBehaviour {
 					Transform levelloader = GameObject.Find("LevelContinue").transform;
 					levelloader.name = levelname[i+visibleleveloffset];
 					DontDestroyOnLoad(levelloader);
+					Transform musicplayer = Instantiate(musicprefab, new Vector3(0, 0, 0), transform.rotation);
+					musicplayer.name = "MusicPlayer2";
+					DontDestroyOnLoad(musicplayer);
 					SceneManager.LoadScene("CustomLevels");
 				}
 				//edit the level
@@ -121,6 +128,9 @@ public class ShowCustomLevels : MonoBehaviour {
 					Transform levelloader = GameObject.Find("LevelContinue").transform;
 					levelloader.name = levelname[i+visibleleveloffset];
 					DontDestroyOnLoad(levelloader);
+					Transform musicplayer = Instantiate(musicprefab, new Vector3(0, 0, 0), transform.rotation);
+					musicplayer.name = "MusicPlayer2";
+					DontDestroyOnLoad(musicplayer);
 					SceneManager.LoadScene("LevelEditor");
 				}
 				if(i % 3 == 2){

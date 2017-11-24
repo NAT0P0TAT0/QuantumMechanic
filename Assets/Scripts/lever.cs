@@ -20,7 +20,7 @@ public class lever : MonoBehaviour {
 			playerleft = false;
 			playerright = false;
 			flip = false;
-            GameObject.Find("AudioController").GetComponent<AudioController>().PlaySound(1);
+            GameObject.Find("AudioController").GetComponent<AudioController>().PlaySound(1, true);
 			//flip lever render
 			if(tiltedright){
 				this.transform.eulerAngles = new Vector3(this.transform.eulerAngles.x, -180, this.transform.eulerAngles.z);

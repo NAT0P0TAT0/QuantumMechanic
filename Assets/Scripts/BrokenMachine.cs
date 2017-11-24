@@ -45,6 +45,7 @@ public class BrokenMachine : MonoBehaviour {
 			}
 			//show repairing indicator
 			if(showrepairing){
+				GameObject.Find("AudioController").GetComponent<AudioController>().PlaySound(5, false);
 				this.gameObject.transform.GetChild(1).transform.localPosition = new Vector3(0, 1.25f, -0.25f);
 				if(clockwise){
 					rotation += 150*Time.deltaTime;

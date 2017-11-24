@@ -38,12 +38,12 @@ public class button : MonoBehaviour {
 			
 			if(Toggle){
 				this.gameObject.transform.GetChild(0).GetComponent<Renderer>().material = usedButton;
-                GameObject.Find("AudioController").GetComponent<AudioController>().PlaySound(2);
+                GameObject.Find("AudioController").GetComponent<AudioController>().PlaySound(2, true);
 			} else {
                 if(activated){
-                    GameObject.Find("AudioController").GetComponent<AudioController>().PlaySound(3);
+                    GameObject.Find("AudioController").GetComponent<AudioController>().PlaySound(3, true);
                 } else {
-                    GameObject.Find("AudioController").GetComponent<AudioController>().PlaySound(4);
+                    GameObject.Find("AudioController").GetComponent<AudioController>().PlaySound(4, true);
                 }
             }
 		}

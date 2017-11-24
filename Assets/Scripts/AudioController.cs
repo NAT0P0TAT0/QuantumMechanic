@@ -18,7 +18,9 @@ public class AudioController : MonoBehaviour {
         volume = PlayerPrefs.GetFloat("SFXvolume");
 	}
 
-    public void PlaySound(int id){
-        source.PlayOneShot(sounds[id], volume);
+    public void PlaySound(int id, bool force){
+		if (!source.isPlaying || force){
+			source.PlayOneShot(sounds[id], volume);
+		}
     }
 }

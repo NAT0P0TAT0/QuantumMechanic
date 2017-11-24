@@ -28,7 +28,6 @@ public class ScoreCounter : MonoBehaviour {
 	
 	public void SaveScore(int chapter, int level){
 		//check and set level time and ability use
-		Debug.Log("checking time");
 		float checkTime = PlayerPrefs.GetFloat(chapter+"-"+level+"-time");
 		if(customlevel){checkTime = PlayerPrefs.GetFloat(levelname+"-time");}
 		if (Currtime < checkTime || checkTime == 0){
@@ -38,7 +37,6 @@ public class ScoreCounter : MonoBehaviour {
 				PlayerPrefs.SetFloat(chapter+"-"+level+"-time", Currtime);
 			}
 		}
-		Debug.Log("checking uses");
 		int checkUses = PlayerPrefs.GetInt(chapter+"-"+level+"-abilities");
 		if(customlevel){checkUses = PlayerPrefs.GetInt(levelname+"-abilities");}
 		if (AbilityCount < checkUses || checkUses == 0){
