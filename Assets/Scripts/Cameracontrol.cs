@@ -8,10 +8,7 @@ public class Cameracontrol : MonoBehaviour {
 	public int MinZoom = 10;
 	private float currZoom = 10f;
 	private int minSeparation = 8;
-	private float playerfocus = 0.5f;
 	public int maxZoom = 20;
-	private Vector3 PlayerPos;
-	private Vector3 OtherPos;
 	public int Xlimit = 9999999;
 	public int levelheight = 20;
 	public float camSpeed = 3.5f;
@@ -25,34 +22,30 @@ public class Cameracontrol : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		playerfocus = 0.5f;
 		if(!GameObject.Find("Player-char").GetComponent<QuantumAbilities>().InLightForm){
 			targets[0] = GameObject.Find("Player-char");
 		} else {
 			targets[0] = GameObject.Find("Player-Light-Form");
 		}
-		PlayerPos = targets[0].transform.position;
-		OtherPos = targets[0].transform.position;
-		if (targets.Count > 2){
-			Vector3 average = Vector3.zero;
+		Vector3 center = new Vector3(0,0,0);
+		//find center of camera targets and manage min zoom
+		if (targets.Count > 1){
+			Bounds targetbounds = new Bounds(targets[0].transform.position, Vector3.zero);
 			for (int i = 1; i < targets.Count; i++){
-				average += targets[i].transform.position;
+				targetbounds.Encapsulate(targets[i].transform.position); 
 			}
-			OtherPos = average/(targets.Count-1);
-		} else if (targets.Count == 2){
-			OtherPos = targets[1].transform.position;
-		}
-		float dist = Vector3.Distance(PlayerPos, OtherPos);
-		
-		//manage min and max
-		if (dist > minSeparation) {
+			center = targetbounds.center;
+			float dist = targetbounds.size.x;
+			if(targetbounds.size.y > dist){dist = targetbounds.size.y;}
 			currZoom = (dist - minSeparation) + MinZoom;
 		} else {
+			center = targets[0].transform.position;
 			currZoom = MinZoom;
 		}
+		
+		//manage max zoom
 		if (currZoom > maxZoom) {
 			float zoomdifference = maxZoom/currZoom;
-			playerfocus = playerfocus*zoomdifference*zoomdifference*zoomdifference;
 			currZoom = ((currZoom - MinZoom)*(zoomdifference*zoomdifference*zoomdifference*zoomdifference)) + MinZoom;
 		}
         int tempMinZoom = MinZoom;
@@ -77,7 +70,6 @@ public class Cameracontrol : MonoBehaviour {
 			targetZoom += camSpeed*Time.deltaTime*camSpeed/2;
 			if(targetZoom > currZoom){targetZoom = currZoom;}
 		}
-		Vector3 center = Vector3.Lerp(PlayerPos, OtherPos, playerfocus);
 		targetPos = new Vector3(center.x, center.y, -10);
 		this.transform.position = Vector3.Lerp(this.transform.position, targetPos, 0.015f*camSpeed);
         
